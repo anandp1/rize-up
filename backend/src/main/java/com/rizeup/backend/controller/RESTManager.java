@@ -1,4 +1,4 @@
-package com.rizeup.backend;
+package com.rizeup.backend.controller;
 
 import java.sql.SQLException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvException;
+
+import com.rizeup.backend.Database;
 
 @RestController
 @CrossOrigin
