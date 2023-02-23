@@ -1,7 +1,6 @@
 package com.rizeup.backend;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class Database {
     public final String DBURL;
