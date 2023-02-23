@@ -1,10 +1,10 @@
-package nicole.anand.rizeup.rizeup;
+package com.rizeup.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RizeupApplicationTests {
+class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {

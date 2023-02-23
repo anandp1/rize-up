@@ -8,10 +8,10 @@
 		<version>3.0.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>nicole.anand.rizeup</groupId>
-	<artifactId>rizeup</artifactId>
+	<groupId>com.rizeup</groupId>
+	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>rizeup</name>
+	<name>backend</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
