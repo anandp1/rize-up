@@ -1,3 +1,5 @@
+import type { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
 
 export default function Home() {
@@ -17,3 +19,24 @@ export default function Home() {
     </>
   );
 }
+
+const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (!session?.user?.email) {
+    return {
+      redirect: {
+        destination: "/sign-in",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      username: session.user.email,
+    },
+  };
+};
+
+export { getServerSideProps };

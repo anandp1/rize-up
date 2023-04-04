@@ -77,31 +77,31 @@ public class RESTManager {
     public Object signIn(@RequestBody SignInCredentials credentials) throws SQLException {
         String email = credentials.getEmail();
         String password = credentials.getPassword();
-        SignIn role = credentials.getRole();
+        String role = credentials.getRole();
 
         if (email == null || password == null || role == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email, password, or role is null");
         }
 
-        if (role == SignIn.MEMBER) {
+        if (role.equals(SignIn.MEMBER.getRole())) {
             Member member = memberTable.getMember(email, password);
             if (member == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found");
             }
             return member;
-        } else if (role == SignIn.TRAINER) {
+        } else if (role.equals(SignIn.TRAINER.getRole())) {
             Trainer trainer = trainerTable.getTrainer(email, password);
             if (trainer == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Trainer not found");
             }
             return trainer;
-        } else if (role == SignIn.FRONT_DESK) {
+        } else if (role.equals(SignIn.FRONT_DESK.getRole())) {
             FrontDesk frontDesk = frontDeskTable.getFrontDesk(email, password);
             if (frontDesk == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Front desk staff not found");
             }
             return frontDesk;
-        } else if (role == SignIn.MANAGER) {
+        } else if (role.equals(SignIn.MANAGER.getRole())) {
             Manager manager = managerTable.getManager(email, password);
             if (manager == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found");

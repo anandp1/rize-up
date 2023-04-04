@@ -3,9 +3,9 @@ package com.rizeup.backend.controller;
 class SignInCredentials {
     private String email;
     private String password;
-    private SignIn role;
+    private String role;
 
-    public SignInCredentials(String email, String password, SignIn role) {
+    public SignInCredentials(String email, String password, String role) {
         this.email = email;
         this.password = password;
         this.role = role;
@@ -19,7 +19,7 @@ class SignInCredentials {
         return password;
     }
 
-    public SignIn getRole() {
+    public String getRole() {
         return role;
     }
 }

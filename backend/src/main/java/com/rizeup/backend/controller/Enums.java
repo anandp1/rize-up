@@ -1,10 +1,10 @@
 package com.rizeup.backend.controller;
 
 enum SignIn {
-    MANAGER("manager"),
-    MEMBER("member"),
-    FRONT_DESK("front-desk"),
-    TRAINER("trainer");
+    MANAGER("Manager"),
+    MEMBER("Member"),
+    FRONT_DESK("Front Desk"),
+    TRAINER("Trainer");
 
     private final String role;
 

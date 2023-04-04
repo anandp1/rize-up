@@ -1,28 +1,27 @@
+import classNames from "classnames";
 import { GetServerSideProps } from "next";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 export enum SignInRole {
-  MANAGER = "manager",
-  MEMBER = "member",
-  FRONT_DESK = "front-desk",
-  TRAINER = "trainer",
+  MANAGER = "Manager",
+  MEMBER = "Member",
+  FRONT_DESK = "Front Desk",
+  TRAINER = "Trainer",
 }
 
 const SignIn: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [dropdown, setDropdown] = useState(false);
+  const [role, setRole] = useState<SignInRole>(SignInRole.MANAGER);
 
   const router = useRouter();
 
-  const handleSignIn = (role: SignInRole) => {
-    if (role === SignInRole.MEMBER) {
-      setUsername(SignInRole.MEMBER);
-    }
-
+  const handleSignIn = () => {
     signIn("credentials", {
-      username,
+      username: `${role}-${username}`,
       password,
       redirect: false,
     });
@@ -79,9 +78,52 @@ const SignIn: React.FC = () => {
                 />
               </div>
             </div>
+            <button
+              onClick={() => setDropdown(!dropdown)}
+              className="text-white bg-blue-700 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
+            >
+              {role || "Select Role"}
+              <svg
+                className="w-4 h-4 ml-2"
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            <div
+              className={classNames(
+                "z-10 absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44",
+                dropdown ? "block" : "hidden"
+              )}
+            >
+              <ul className="py-2 text-sm text-gray-700 w-full">
+                {Object.values(SignInRole).map((role) => (
+                  <li key={role}>
+                    <button
+                      onClick={() => {
+                        setRole(role);
+                        setDropdown(false);
+                      }}
+                      className="block text-center w-full py-2 hover:bg-gray-100"
+                    >
+                      {role}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <div>
               <button
-                onClick={() => handleSignIn(SignInRole.MEMBER)}
+                onClick={handleSignIn}
                 className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 Sign in
@@ -100,10 +142,7 @@ const SignIn: React.FC = () => {
 
             <div className="mt-6">
               <div>
-                <button
-                  onClick={() => handleSignIn(SignInRole.MEMBER)}
-                  className="flex w-full justify-center rounded-md border border-transparent bg-indigo-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
+                <button className="flex w-full justify-center rounded-md border border-transparent bg-indigo-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                   Create an account
                 </button>
               </div>
