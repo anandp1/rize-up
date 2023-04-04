@@ -29,12 +29,21 @@ public class MemberTable {
         return members;
     }
 
-    // public void addCustomer(Customer customer) throws SQLException {
-    // try (PreparedStatement statement = connection
-    // .prepareStatement("INSERT INTO CUSTOMERS (name, email) VALUES (?, ?)")) {
-    // statement.setString(1, customer.getName());
-    // statement.setString(2, customer.getEmail());
-    // statement.executeUpdate();
-    // }
-    // }
+    public Member getMember(String email, String password) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM MEMBER WHERE email = ? AND password = ?")) {
+            statement.setString(1, email);
+            statement.setString(2, password);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new Member(resultSet.getString("email"), resultSet.getDate("birth_date"),
+                            resultSet.getInt("age"),
+                            resultSet.getString("gender").charAt(0), resultSet.getString("first_name"),
+                            resultSet.getString("last_name"));
+                }
+            }
+        }
+        return null; // return null if no member found with the given email and password
+    }
+
 }

@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export enum SignInRole {
   MANAGER = "manager",
-  CUSTOMER = "customer",
+  MEMBER = "member",
   FRONT_DESK = "front-desk",
   TRAINER = "trainer",
 }
@@ -17,8 +17,8 @@ const SignIn: React.FC = () => {
   const router = useRouter();
 
   const handleSignIn = (role: SignInRole) => {
-    if (role === SignInRole.CUSTOMER) {
-      setUsername(SignInRole.CUSTOMER);
+    if (role === SignInRole.MEMBER) {
+      setUsername(SignInRole.MEMBER);
     }
 
     signIn("credentials", {
@@ -81,7 +81,7 @@ const SignIn: React.FC = () => {
             </div>
             <div>
               <button
-                onClick={() => handleSignIn(SignInRole.CUSTOMER)}
+                onClick={() => handleSignIn(SignInRole.MEMBER)}
                 className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 Sign in
@@ -101,7 +101,7 @@ const SignIn: React.FC = () => {
             <div className="mt-6">
               <div>
                 <button
-                  onClick={() => handleSignIn(SignInRole.CUSTOMER)}
+                  onClick={() => handleSignIn(SignInRole.MEMBER)}
                   className="flex w-full justify-center rounded-md border border-transparent bg-indigo-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   Create an account
