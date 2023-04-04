@@ -1,0 +1,18 @@
+version: "3.2"
+
+services:
+  mysql:
+    container_name: cpsc471-finalProject-database-container
+    build:
+      context: .
+      dockerfile: Dockerfile.database
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: "db"
+      MYSQL_ROOT_PASSWORD: "cPSc471"
+      MYSQL_USER: cpsc471
+      MYSQL_PASSWORD: randCPsc471Pass
+    ports:
+      - "26289:3306"
+    expose:
+      - "3306"

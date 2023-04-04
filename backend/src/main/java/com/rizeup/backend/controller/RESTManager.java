@@ -1,5 +1,6 @@
 package com.rizeup.backend.controller;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,11 +9,16 @@ import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvException;
 
 import com.rizeup.backend.Database;
+import com.rizeup.backend.model.Member;
+import com.rizeup.backend.table.MemberTable;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
 public class RESTManager {
     public Database database = null;
+    private MemberTable memberTable;
 
     /**
      * Constructor for RESTManager, connects to database
@@ -20,9 +26,12 @@ public class RESTManager {
     public RESTManager() {
         try {
             Dotenv environment = Dotenv.load();
-            database = new Database("jdbc:mysql://" + environment.get("DB_URL"), environment.get("DB_USER"),
+            database = new Database(environment.get("DB_URL"), environment.get("DB_USER"),
                     environment.get("DB_PASS"));
-            database.connect();
+            Connection dbConnect = database.connect();
+
+            this.memberTable = new MemberTable(dbConnect);
+
         } catch (DotenvException e) {
             System.err.println("Could not load .env file in root folder!");
             System.err.println("Create or move .env file with DB_URL, DB_USER, DB_PASS");
@@ -40,5 +49,10 @@ public class RESTManager {
     @GetMapping("/")
     public String home() {
         return "Hello World!";
+    }
+
+    @GetMapping("/members")
+    public List<Member> getAllMembers() throws SQLException {
+        return memberTable.getAllMembers();
     }
 }
