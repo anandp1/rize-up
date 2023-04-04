@@ -16,7 +16,7 @@ public class TrainerTable {
 
     public Trainer getTrainer(String email, String password) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM MEMBER WHERE email = ? AND password = ?")) {
+                "SELECT * FROM TRAINER WHERE email = ? AND password = ?")) {
             statement.setString(1, email);
             statement.setString(2, password);
             try (ResultSet resultSet = statement.executeQuery()) {

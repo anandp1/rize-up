@@ -74,39 +74,39 @@ public class RESTManager {
 
     @PostMapping("/sign-in")
     @ResponseStatus(HttpStatus.OK)
-    public <T> T signIn(@RequestBody SignInCredentials credentials, Class<T> returnType) throws SQLException {
+    public Object signIn(@RequestBody SignInCredentials credentials) throws SQLException {
         String email = credentials.getEmail();
         String password = credentials.getPassword();
         SignIn role = credentials.getRole();
 
-        if (email == null || password == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email or password is null");
+        if (email == null || password == null || role == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email, password, or role is null");
         }
 
-        if (role == SignIn.MEMBER && returnType == Member.class) {
+        if (role == SignIn.MEMBER) {
             Member member = memberTable.getMember(email, password);
             if (member == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found");
             }
-            return returnType.cast(member);
-        } else if (role == SignIn.TRAINER && returnType == Trainer.class) {
+            return member;
+        } else if (role == SignIn.TRAINER) {
             Trainer trainer = trainerTable.getTrainer(email, password);
             if (trainer == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Trainer not found");
             }
-            return returnType.cast(trainer);
-        } else if (role == SignIn.FRONT_DESK && returnType == FrontDesk.class) {
+            return trainer;
+        } else if (role == SignIn.FRONT_DESK) {
             FrontDesk frontDesk = frontDeskTable.getFrontDesk(email, password);
             if (frontDesk == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Front desk staff not found");
             }
-            return returnType.cast(frontDesk);
-        } else if (role == SignIn.MANAGER && returnType == Manager.class) {
+            return frontDesk;
+        } else if (role == SignIn.MANAGER) {
             Manager manager = managerTable.getManager(email, password);
             if (manager == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found");
             }
-            return returnType.cast(manager);
+            return manager;
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
         }

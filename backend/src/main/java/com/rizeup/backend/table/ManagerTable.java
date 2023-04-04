@@ -16,7 +16,7 @@ public class ManagerTable {
 
     public Manager getManager(String email, String password) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM MEMBER WHERE email = ? AND password = ?")) {
+                "SELECT * FROM MANAGER WHERE email = ? AND password = ?")) {
             statement.setString(1, email);
             statement.setString(2, password);
             try (ResultSet resultSet = statement.executeQuery()) {

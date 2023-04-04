@@ -16,7 +16,7 @@ public class FrontDeskTable {
 
     public FrontDesk getFrontDesk(String email, String password) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM MEMBER WHERE email = ? AND password = ?")) {
+                "SELECT * FROM FRONT_DESK WHERE email = ? AND password = ?")) {
             statement.setString(1, email);
             statement.setString(2, password);
             try (ResultSet resultSet = statement.executeQuery()) {
