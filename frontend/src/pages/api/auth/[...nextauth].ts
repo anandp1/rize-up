@@ -25,13 +25,23 @@ async function auth(request: NextApiRequest, response: NextApiResponse) {
           const username = usernameAndRole?.[1];
           const password = credentials?.password;
 
+          if (!role || !username || !password) {
+            return null;
+          }
+
           const res = await axios.post(`${process.env.RIZEUP_API}/sign-in`, {
             email: username,
             password,
             role,
           });
 
-          const user = await res.data;
+          const responseData = await res.data;
+
+          const user = {
+            id: responseData?.id,
+            name: role,
+            email: responseData?.email,
+          };
 
           if (res.status === 200 && user) {
             return user;
