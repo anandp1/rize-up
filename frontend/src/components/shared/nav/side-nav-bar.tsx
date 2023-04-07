@@ -12,8 +12,12 @@ import Link from "next/link";
 
 const SideNavBar = () => {
   const router = useRouter();
+  const pageName = router.pathname.split("/")?.[1];
+  const [selectedNavItem, setSelectedNavItem] = useState(
+    !pageName || pageName === "" ? "Dashboard" : pageName
+  );
 
-  const [selectedNavItem, setSelectedNavItem] = useState("Dashboard");
+  console.log(selectedNavItem);
 
   const classes = {
     icon: "absolute top-1.5 left-1.5",
@@ -21,6 +25,11 @@ const SideNavBar = () => {
 
   const handleNavItemClicked = (name: string) => {
     setSelectedNavItem(name);
+    if (name === "Dashboard") {
+      router.push("/");
+      return;
+    }
+
     router.push(`/${name.toLowerCase()}`);
   };
 
@@ -49,7 +58,7 @@ const SideNavBar = () => {
         <IoPeopleOutline
           className={classNames(
             classes.icon,
-            selectedNavItem === "Clients" ? "text-white" : ""
+            selectedNavItem === "clients" ? "text-white" : ""
           )}
         />
       ),
@@ -62,7 +71,7 @@ const SideNavBar = () => {
         <IoPersonOutline
           className={classNames(
             classes.icon,
-            selectedNavItem === "Trainer" ? "text-white" : ""
+            selectedNavItem === "trainer" ? "text-white" : ""
           )}
         />
       ),
@@ -75,12 +84,12 @@ const SideNavBar = () => {
       ],
     },
     {
-      name: "Setting",
+      name: "Settings",
       icon: (
         <IoSettingsOutline
           className={classNames(
             classes.icon,
-            selectedNavItem === "Setting" ? "text-white" : ""
+            selectedNavItem === "settings" ? "text-white" : ""
           )}
         />
       ),
@@ -99,14 +108,11 @@ const SideNavBar = () => {
       <div className="flex flex-col gap-y-7">
         {navItems.map((item) => {
           return (
-            <button
-              key={item.name}
-              onClick={() => handleNavItemClicked(item.name)}
-            >
+            <Link passHref key={item.name} href={`${item.link}`}>
               <div
                 className={classNames(
                   "mx-auto relative bg-slate-100 w-7 h-7 rounded-sm",
-                  selectedNavItem === item.name
+                  selectedNavItem.toLowerCase() === item.name.toLowerCase()
                     ? "bg-violet-900 shadow-2xl"
                     : ""
                 )}
@@ -116,12 +122,14 @@ const SideNavBar = () => {
               <p
                 className={classNames(
                   "text-xs text-center mt-1",
-                  selectedNavItem === item.name ? "font-medium" : ""
+                  selectedNavItem.toLowerCase() === item.name.toLowerCase()
+                    ? "font-medium"
+                    : ""
                 )}
               >
                 {item.name}
               </p>
-            </button>
+            </Link>
           );
         })}
       </div>
