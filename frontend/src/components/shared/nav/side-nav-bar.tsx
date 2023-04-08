@@ -19,8 +19,6 @@ const SideNavBar = () => {
     !pageName || pageName === "" ? "Dashboard" : pageName
   );
 
-  console.log(selectedNavItem);
-
   const classes = {
     icon: "absolute top-1.5 left-1.5",
   };
