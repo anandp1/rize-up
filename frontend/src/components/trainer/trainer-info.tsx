@@ -1,13 +1,28 @@
+import { AiOutlinePlus } from "react-icons/ai";
+
 const TrainerInfo = () => {
   const classes = {
     containers: "bg-white rounded-lg shadow-lg p-6 mx-8",
   };
 
+  const addTrainer = () => {
+    // Add API to add trainer to the member
+  };
+
   return (
     <div className={classes.containers}>
       <div className="flex items-center mb-4">
-        <div>
-          <h2 className="text-xl font-bold mb-1">Joe</h2>
+        <div className="w-full">
+          <span className="flex flex-row">
+            <h2 className="text-xl font-bold mb-1">Joe</h2>
+            <button
+              onClick={addTrainer}
+              className="ml-auto text-sm bg-orange-500 rounded-md flex flex-row px-4 py-2"
+            >
+              <AiOutlinePlus className="text-white my-auto ml-1 mr-2" />
+              <p className="text-white">Add Trainer</p>
+            </button>
+          </span>
           <p className="text-gray-500 text-sm">
             Personal Trainer • joe@example.com • 35 • Male
           </p>

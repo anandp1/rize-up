@@ -4,6 +4,8 @@ import {
   IoPersonOutline,
   IoSettingsOutline,
 } from "react-icons/io5";
+import { AiOutlineSchedule } from "react-icons/ai";
+
 import { SignInRole } from "../../../pages/sign-in";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -76,6 +78,24 @@ const SideNavBar = () => {
         />
       ),
       link: "/trainer",
+      roles: [
+        SignInRole.MANAGER,
+        SignInRole.FRONT_DESK,
+        SignInRole.TRAINER,
+        SignInRole.MEMBER,
+      ],
+    },
+    {
+      name: "Schedule",
+      icon: (
+        <AiOutlineSchedule
+          className={classNames(
+            classes.icon,
+            selectedNavItem === "schedule" ? "text-white" : ""
+          )}
+        />
+      ),
+      link: "/schedule",
       roles: [
         SignInRole.MANAGER,
         SignInRole.FRONT_DESK,
