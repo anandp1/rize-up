@@ -3,15 +3,7 @@ CREATE DATABASE RIZEUP;
 USE RIZEUP;
 
 
-DROP TABLE IF EXISTS NO_REGISTERED;
-CREATE TABLE NO_REGISTERED (
-    count INT NOT NULL,
-    Sec_no INT NOT NULL,
-    class_name VARCHAR(50) NOT NULL,
-    timestamp TIMESTAMP NOT NULL,
-    PRIMARY KEY (count, Sec_no, class_name, timestamp)
-    FOREIGN Key (timestamp) REFERENCES REPORT (timestamp)
-);
+
 
 DROP TABLE IF EXISTS REPORT;
 CREATE TABLE REPORT (
@@ -19,9 +11,19 @@ CREATE TABLE REPORT (
     num_gym_members INT NOT NULL,
     new_member_count INT NOT NULL,
     manager_email VARCHAR(50) NOT NULL,
-    PRIMARY KEY (timestamp),
-    FOREIGN Key (manager_email) REFERENCES MANAGER (email)
+    PRIMARY KEY (timestamp)
 );
+
+
+DROP TABLE IF EXISTS NO_REGISTERED;
+CREATE TABLE NO_REGISTERED (
+    count INT NOT NULL,
+    Sec_no INT NOT NULL,
+    class_name VARCHAR(50) NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
+    PRIMARY KEY (count, Sec_no, class_name, timestamp)
+);
+
 
 DROP TABLE IF EXISTS MEMBER;
 CREATE TABLE MEMBER (
@@ -34,16 +36,15 @@ CREATE TABLE MEMBER (
     middle_name VARCHAR(255),
     last_name VARCHAR(255) NOT NULL,
     date_joined DATE  NOT NULL,
-    membership_name VARCHAR(255),
+    membership_name VARCHAR(255) NOT NULL,
     gym_id INT  NOT NULL,
-    PRIMARY KEY (email),
-    FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS(membership_name),
-    FOREIGN KEY (gym_id) REFERENCES GYM (passcode)
+    PRIMARY KEY (email)
 );
+
 
 INSERT INTO MEMBER (email, birth_date, age, gender, password, first_name, middle_name, last_name, date_joined, membership_name, gym_id)
 VALUES
-('test@member.com', '2000-01-01', '23', 'M', 'test', 'Joe', NULL, 'Donald', '2022-01-01', 'general', '002');
+('test@member.com', '2000-01-01', '23', 'M', 'test', 'Joe', NULL, 'Donald', '2022-01-01', 'Basic', '002');
 
 DROP TABLE IF EXISTS MANAGER;
 CREATE TABLE MANAGER (
@@ -56,9 +57,9 @@ CREATE TABLE MANAGER (
     middle_name VARCHAR(255),
     last_name VARCHAR(255) NOT NULL,
     gym_id INT NOT NULL,
-    PRIMARY KEY (email),
-    FOREIGN KEY (gym_id) REFERENCES GYM (passcode)
+    PRIMARY KEY (email)
 );
+
 
 INSERT INTO MANAGER (email, birth_date, age, gender, password, first_name, middle_name, last_name, gym_id)
 VALUES
@@ -75,8 +76,7 @@ CREATE TABLE FRONT_DESK (
     middle_name VARCHAR(255),
     last_name VARCHAR(255) NOT NULL,
     gym_id INT NOT NULL,
-    PRIMARY KEY (email),
-    FOREIGN KEY (gym_id) REFERENCES GYM (passcode)
+    PRIMARY KEY (email)
 );
 
 INSERT INTO FRONT_DESK (email, birth_date, age, gender, password, first_name, middle_name, last_name, gym_id)
@@ -94,8 +94,7 @@ CREATE TABLE TRAINER (
     middle_name VARCHAR(255),
     last_name VARCHAR(255) NOT NULL,
     gym_id INT NOT NULL,
-    PRIMARY KEY (email),
-    FOREIGN KEY (gym_id) REFERENCES GYM (passcode)
+    PRIMARY KEY (email)
 );
 
 INSERT INTO TRAINER (email, birth_date, age, gender, password, first_name, middle_name, last_name, gym_id)
@@ -111,6 +110,9 @@ CREATE TABLE GYM (
     name VARCHAR(255) NOT NULL,
     PRIMARY KEY(passcode)
 );
+INSERT INTO GYM (passcode, phone, gym_hours, address, name)
+VALUES
+('002', '403-555-0129', 'Mon-Sun 5AM - 12AM', '123 University Ave, NW', 'Rize Up');
 
 DROP TABLE IF EXISTS MEMBERSHIP_PLANS;
 CREATE TABLE MEMBERSHIP_PLANS (
@@ -128,7 +130,7 @@ DROP TABLE IF EXISTS MEMBERSHIP_PERKS;
 CREATE TABLE MEMBERSHIP_PERKS (
     membership_name VARCHAR(255)  NOT NULL,
     perk VARCHAR(255)  NOT NULL,
-    PRIMARY KEY (membership_name, perk)
+    PRIMARY KEY (membership_name, perk),
     FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS (membership_name)
 );
 
@@ -137,7 +139,7 @@ CREATE TABLE GYM_PLANS (
     membership_name VARCHAR(255)  NOT NULL,
     passcode INT NOT NULL,
     PRIMARY KEY (membership_name, passcode),
-    FOREIGN KEY (membership_name) REFERENCES (MEMBERSHIP_PLANS),
+    FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS(membership_name),
     FOREIGN KEY (passcode) REFERENCES GYM (passcode)
 );
 
@@ -150,7 +152,8 @@ CREATE TABLE MESSAGE (
     trainer_email VARCHAR(255)  NOT NULL,
     member_email VARCHAR(255) NOT NULL,
     PRIMARY KEY (sender_name, receiver_name, timestamp),
-    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email)
+    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email),
+    FOREIGN KEY (member_email) REFERENCES MEMBER(email)
 );
 
 DROP TABLE IF EXISTS TRAINS;
@@ -188,16 +191,32 @@ CREATE TABLE TRAINER_EXPERIENCE(
     FOREIGN KEY (trainer_email) REFERENCES TRAINER (email)
 );
 
-DROP TABLE IF EXISTS TEACHES;
-CREATE TABLE TEACHES(
-    trainer_email VARCHAR(255) NOT NULL,
+DROP TABLE IF EXISTS CLASS;
+CREATE TABLE CLASS(
+    name VARCHAR(255) NOT NULL,
+    length INT NOT NULL, 
+    cost FLOAT NOT NULL,
+    PRIMARY KEY(name)
+);
+INSERT INTO CLASS (name, length, cost)
+VALUES
+('Zoomba', '90', '19.99');
+
+DROP TABLE IF EXISTS SECTION;
+CREATE TABLE SECTION(
     Sec_no INT NOT NULL,
+    time VARCHAR(8) NOT NULL,
+    day_of_week INT NOT NULL,
+    capacity INT NOT NULL,
+    Room_number INT,
     class_name VARCHAR(255) NOT NULL,
-    PRIMARY KEY (trainer_email, Sec_no, class_name),
-    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email),
-    FOREIGN KEY (Sec_no) REFERENCES SECTION(Sec_no),
+    PRIMARY KEY (Sec_no, class_name),
     FOREIGN KEY (class_name) REFERENCES CLASS(name)
 );
+INSERT INTO SECTION (Sec_no, time, day_of_week, capacity, Room_number, class_name)
+VALUES
+('01', '08:30 AM','1', '30', '03', 'Zoomba');
+
 
 DROP TABLE IF EXISTS JOINS;
 CREATE TABLE JOINS(
@@ -210,35 +229,45 @@ CREATE TABLE JOINS(
     FOREIGN KEY (member_email) REFERENCES MEMBER (email)
 );
 
-DROP TABLE IF EXISTS SECTION;
-CREATE TABLE SECTION(
-    Sec_no INT NOT NULL,
-    time VARCHAR(8) NOT NULL,
-    day_of_week VARCHAR(2) NOT NULL,
-    capacity INT NOT NULL,
-    Room_number INT,
-    class_name VARCHAR(255) NOT NULL,
-    PRIMARY KEY (Sec_no, class_name),
-    FOREIGN KEY (class_name) REFERENCES CLASS(name)
-);
-INSERT INTO CLASS (Sec_no, time, day_of_week, capacity, Room_number, class_name)
-VALUES
-('01', '08:30 AM','MO', '30', '03', 'Zoomba');
-
 
 DROP TABLE IF EXISTS CLASSES_OFFERED;
 CREATE TABLE CLASSES_OFFERED(
     class_name VARCHAR(255) NOT NULL,
-    passcode INT
+    passcode INT NOT NULL,
+    PRIMARY KEY(class_name, passcode),
+    FOREIGN KEY(class_name) REFERENCES CLASS (name),
+    FOREIGN KEY(passcode) REFERENCES GYM(passcode)
 );
 
-DROP TABLE IF EXISTS CLASS;
-CREATE TABLE CLASS(
-    name VARCHAR(255) NOT NULL,
-    length INT NOT NULL, 
-    cost FLOAT NOT NULL,
-    PRIMARY KEY(name)
+DROP TABLE IF EXISTS TEACHES;
+CREATE TABLE TEACHES(
+    trainer_email VARCHAR(255) NOT NULL,
+    Sec_no INT NOT NULL,
+    class_name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (trainer_email, Sec_no, class_name),
+    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email),
+    FOREIGN KEY (Sec_no) REFERENCES SECTION(Sec_no),
+    FOREIGN KEY (class_name) REFERENCES CLASS(name)
 );
-INSERT INTO CLASS (name, length, cost)
+INSERT INTO TEACHES (trainer_email, Sec_no, class_name)
 VALUES
-('Zoomba', '90', '19.99');
+('test@trainer.com', '01','Zoomba');
+
+ALTER TABLE REPORT
+ADD FOREIGN KEY (manager_email) REFERENCES MANAGER (email);
+ALTER TABLE NO_REGISTERED
+ADD FOREIGN Key (timestamp) REFERENCES REPORT (timestamp);
+
+ALTER TABLE MEMBER
+ADD FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS(membership_name);
+ALTER TABLE MEMBER
+ADD FOREIGN Key (gym_id) REFERENCES GYM (passcode);
+
+ALTER TABLE MANAGER
+ADD FOREIGN KEY (gym_id) REFERENCES GYM (passcode);
+
+ALTER TABLE FRONT_DESK
+ADD FOREIGN KEY (gym_id) REFERENCES GYM (passcode);
+
+ALTER TABLE TRAINER
+ADD FOREIGN KEY (gym_id) REFERENCES GYM (passcode);
