@@ -20,10 +20,12 @@ import com.rizeup.backend.model.FrontDesk;
 import com.rizeup.backend.model.Manager;
 import com.rizeup.backend.model.Member;
 import com.rizeup.backend.model.Trainer;
+import com.rizeup.backend.model.Report;
 import com.rizeup.backend.table.FrontDeskTable;
 import com.rizeup.backend.table.ManagerTable;
 import com.rizeup.backend.table.MemberTable;
 import com.rizeup.backend.table.TrainerTable;
+import com.rizeup.backend.table.ClassTable;
 
 public class App {
 
@@ -35,6 +37,18 @@ public class App {
 
         TrainerTable trainerTable = new TrainerTable(connectdb);
         System.out.println(trainerTable.getClassesByTrainer("test@trainer.com"));
+
+        //ClassTable classTable = new ClassTable(connectdb);
+        //System.out.println(classTable.registerMemberForSection("test@member.com", "Zoomba", 1));
+        ManagerTable managerTable = new ManagerTable(connectdb);
+        Report report = managerTable.addReport("test@manager.com");
+        System.out.println(report.getEmail());  
+        System.out.println(report.getMembers()+"   "+report.getNewMembers()); 
+        System.out.println(report.getTimestamp()); 
+        
+        System.out.println(report.getSecCount().get(0).getName());    
+        System.out.println(report.getSecCount().get(0).getJoined());         
+
 	}
 
 }

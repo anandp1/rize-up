@@ -57,11 +57,11 @@ public class TrainerTable {
 
             try (ResultSet resultSet = statement.executeQuery()) {
 
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     ArrayList<Class> result = new ArrayList<Class>();
                     do{
                         //String name, int length, float cost, int sec, String time, int day, int capacity, int room, String Fname, String Lname
-                        result.add(new Class(resultSet.getString("C.name"),resultSet.getInt("S.length"),resultSet.getFloat("C.cost"), resultSet.getInt("C.Sec_no"), resultSet.getString("s.time"), resultSet.getInt("S.day_of_week"), resultSet.getInt("C.capacity"),resultSet.getInt("S.Room_number"), null, null));
+                        result.add(new Class(resultSet.getString("C.name"),resultSet.getInt("C.length"),resultSet.getFloat("C.cost"), resultSet.getInt("S.Sec_no"), resultSet.getString("S.time"), resultSet.getInt("S.day_of_week"), resultSet.getInt("S.capacity"),resultSet.getInt("S.Room_number")));
                     }while(resultSet.next());
                     return result;
                 }

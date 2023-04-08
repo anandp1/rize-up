@@ -20,7 +20,7 @@ public class GymTable {
                 "SELECT * FROM GYM WHERE GYM.passcode = ? ")) {
             statement.setInt(1, passcode);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     return new Gym(resultSet.getInt("passcode"), resultSet.getString("phone"), resultSet.getString("hours"), resultSet.getString("address"), resultSet.getString("name"));
                 }
             }
@@ -32,7 +32,7 @@ public class GymTable {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM GYM  ")) {
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     ArrayList<Gym> result = new ArrayList<Gym>();
                     do{
                         result.add(new Gym(resultSet.getInt("passcode"), resultSet.getString("phone"), resultSet.getString("hours"), resultSet.getString("address"), resultSet.getString("name")));

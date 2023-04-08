@@ -25,6 +25,16 @@ public class Class {
         this.tFname = Fname;
         this.tLname = Lname;
     }
+    public Class(String name, int length, float cost, int sec, String time, int day, int capacity, int room){
+        this.name = name;
+        this.length = length;
+        this.cost = cost;
+        this.sec = sec;
+        this.time = time;
+        this.day = day;
+        this.capacity = capacity;
+        this.room = room;
+    }
 
     public Class(String name, int sec, String time, int day, int room, String Fname, String Lname){
         this.name = name;

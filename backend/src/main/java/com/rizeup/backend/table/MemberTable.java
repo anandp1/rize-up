@@ -147,9 +147,9 @@ public class MemberTable {
     //Get count of all members
     public int getMemberCount() throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT COUNT(email) AS count FROM MEMBERS ")) {
+                "SELECT COUNT(email) AS count FROM MEMBER ")) {
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     return resultSet.getInt("count");
                 }
             }
@@ -159,14 +159,14 @@ public class MemberTable {
     //Get count of all new members from last 30 days
     public int getNewMemberCount() throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT COUNT(email) AS count FROM MEMBERS WHERE date_joined <= 30")) {
+                "SELECT COUNT(email) AS count FROM MEMBER WHERE date_joined >= ?")) {
             statement.setDate(1, Date.valueOf(LocalDate.now().minusDays(30)));
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     return resultSet.getInt("count");
                 }
             }
         }
-        return -1;
+        return 0;
     }
 }

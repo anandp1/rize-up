@@ -17,7 +17,7 @@ public class ClassTable {
     //retrieve list of registered members for specific sections of classes
     public ArrayList<String> getSectionList(String Cname, int Sec_no) throws SQLException{
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT M.first_name, M.last_name FROM MEMBER AS M, JOINS AS J WHERE J.Sec_no = ? AND J.class_name = ? AND J.member_email = M.email")) {
+                "SELECT M.first_name, M.last_name FROM MEMBER AS M, JOINS AS J WHERE J.Sec_no = ? AND J.name = ? AND J.member_email = M.email")) {
             statement.setInt(1, Sec_no);
             statement.setString(2, Cname);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -40,7 +40,7 @@ public class ClassTable {
             statement.setInt(1, Sec_no);
             statement.setString(1, Cname);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     ArrayList<String> result = new ArrayList<String>();
                     do{
                         result.add(resultSet.getString("T.fisrt_name")+" "+resultSet.getString("T.last_name"));
@@ -58,7 +58,7 @@ public class ClassTable {
                 "SELECT C.name, S.Sec_no, S.time, S.day_of_week, S.Room_number, T.first_name, T.last_name FROM CLASS AS C, SECTION AS S, CLASSES_OFFERED AS O, TRAINS AS X, TRAINER AS T WHERE S.class_name = C.name AND O.class_name = C.name AND O.passcode = ? AND X.Sec_no = S.Sec_no AND C.name = X.class_name AND T.email = X.trainer_email")) {
             statement.setInt(1, gymId);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     ArrayList<Class> result = new ArrayList<Class>();
                     do{
                         //String name, int sec, String time, int day, int room, String Fname, String Lname
@@ -178,7 +178,7 @@ public class ClassTable {
     //Remove a student from a class
     public String removeStudentFromClass(String cname, int sec, String email) throws SQLException{
         try(PreparedStatement statement = connection.prepareStatement (
-            "DELETE FROM JOINS WHERE Sec_no = ? AND class_name = ? AND member_email = ?"
+            "DELETE FROM JOINS WHERE Sec_no = ? AND name = ? AND member_email = ?"
         )){
             statement.setInt(1, sec);
             statement.setString(2, cname);
@@ -208,11 +208,11 @@ public class ClassTable {
     //Get count of members in a section
     public int getSectionCount(String Cname, int Sec_no) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT COUNT(J.member_email) AS count FROM JOINS AS J WHERE J.Sec_no = ? AND J.class_name = ? ")) {
+                "SELECT COUNT(J.member_email) AS count FROM JOINS AS J WHERE J.Sec_no = ? AND J.name = ? ")) {
             statement.setInt(1, Sec_no);
             statement.setString(2, Cname);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     return resultSet.getInt("count");
                 }
             }
@@ -227,7 +227,7 @@ public class ClassTable {
             statement.setInt(1, Sec_no);
             statement.setString(2, Cname);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     return resultSet.getInt("S.capacity");
                 }
             }
@@ -238,13 +238,13 @@ public class ClassTable {
     //Get count of members in all sections
     public ArrayList<Class> getSectionCountAll() throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT COUNT(J.member_email) AS count, J.Sec_no, J.class_name FROM JOINS AS J GROUP BY J.class_name GROUP BY J.Sec_no ")) {
+                "SELECT COUNT(J.member_email) AS count, J.Sec_no, J.name FROM JOINS AS J GROUP BY J.name, J.Sec_no ")) {
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     ArrayList<Class> result = new ArrayList<Class>();
                     do{
                         
-                        result.add(new Class(resultSet.getString("J.class_name"), resultSet.getInt("J.Sec_no"), resultSet.getInt("count")));
+                        result.add(new Class(resultSet.getString("J.name"), resultSet.getInt("J.Sec_no"), resultSet.getInt("count")));
                     }while(resultSet.next());
                     return result;
                 }
