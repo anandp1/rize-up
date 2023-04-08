@@ -1,8 +1,10 @@
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
-import ScheduleInfo from "../components/member/schedule-info";
+import Link from "next/link";
+import { AiOutlinePlus } from "react-icons/ai";
 
-import Layout from "../components/shared/layout";
+import ScheduleInfo from "../../components/member/schedule-info";
+import Layout from "../../components/shared/layout";
 
 interface ScheduleProps {
   username: string;
@@ -20,7 +22,15 @@ const Schedule: React.FC<ScheduleProps> = ({
     <Layout>
       <div className="flex flex-col gap-y-5">
         <div className={classes.containers}>
-          <div className="text-2xl font-bold">Your Schedule</div>
+          <div className="flex flex-row">
+            <div className="text-2xl font-bold">Your Schedule</div>
+            <Link passHref className="ml-auto" href="/schedule/add">
+              <button className="text-sm bg-orange-500 rounded-md flex flex-row px-4 py-2">
+                <AiOutlinePlus className="text-white my-auto ml-1 mr-2" />
+                <p className="text-white">Add Class</p>
+              </button>
+            </Link>
+          </div>
         </div>
         <ScheduleInfo />
       </div>
