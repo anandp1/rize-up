@@ -109,9 +109,21 @@ const SideNavBar = () => {
       roles: [
         SignInRole.MANAGER as string,
         SignInRole.FRONT_DESK as string,
-        SignInRole.TRAINER as string,
         SignInRole.MEMBER as string,
       ],
+    },
+    {
+      name: "Profile",
+      icon: (
+        <IoPersonOutline
+          className={classNames(
+            classes.icon,
+            selectedNavItem === "profile" ? "text-white" : ""
+          )}
+        />
+      ),
+      link: "/profile",
+      roles: [SignInRole.TRAINER as string],
     },
   ];
   return (
