@@ -8,7 +8,7 @@ const TrainerDashboard = () => {
     <div className="flex flex-col gap-y-5">
       <div className={classes.containers}>
         <div className="text-2xl font-bold">Welcome Back, Joe</div>
-        <div className="text-sm text-gray-500">Member Dashboard</div>
+        <div className="text-sm text-gray-500">Trainer Dashboard</div>
       </div>
 
       <div className={classes.containers}>

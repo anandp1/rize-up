@@ -75,7 +75,7 @@ const SideNavBar = () => {
         />
       ),
       link: "/trainer",
-      roles: [SignInRole.MANAGER, SignInRole.FRONT_DESK, SignInRole.MEMBER],
+      roles: [SignInRole.MANAGER, SignInRole.MEMBER],
     },
     {
       name: "Schedule",
@@ -106,11 +106,7 @@ const SideNavBar = () => {
         />
       ),
       link: "/settings",
-      roles: [
-        SignInRole.MANAGER as string,
-        SignInRole.FRONT_DESK as string,
-        SignInRole.MEMBER as string,
-      ],
+      roles: [SignInRole.MANAGER as string, SignInRole.MEMBER as string],
     },
     {
       name: "Profile",
