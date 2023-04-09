@@ -4,7 +4,7 @@ import { MdOutlineCancel } from "react-icons/md";
 
 import Model from "../../model/model";
 
-const TrainerTable = () => {
+const ClientTable = () => {
   const classes = {
     text: "text-left font-medium py-1",
     sentMessage:
@@ -61,10 +61,13 @@ const TrainerTable = () => {
             <span>Name</span>
           </div>
           <div className="flex-1 px-4 py-2">
-            <span>Clients</span>
+            <span>Email</span>
           </div>
           <div className="flex-1 px-4 py-2">
-            <span>Email</span>
+            <span>Age</span>
+          </div>
+          <div className="flex-1 px-4 py-2">
+            <span>Gender</span>
           </div>
           <div className="flex-1 px-4 py-2"></div>
         </div>
@@ -72,21 +75,17 @@ const TrainerTable = () => {
           <div className="flex-1 px-4 py-2 flex items-center truncate">
             <span>John Doe</span>
           </div>
-          <div className="flex-1 px-4 py-2 flex items-center">15</div>
           <div className="flex-1 px-4 py-2 flex items-center truncate">
             johndoe@example.com
           </div>
+          <div className="flex-1 px-4 py-2 flex items-center">15</div>
+          <div className="flex-1 px-4 py-2 flex items-center">M</div>
+
           <div className="flex-1 px-4 py-2 flex items-center justify-end">
             <div className="flex">
               <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm mr-2">
                 <BsChatDots
                   onClick={() => setChatOpen(true)}
-                  className="absolute top-1.5 left-1.5"
-                />
-              </button>
-              <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm">
-                <MdOutlineCancel
-                  onClick={removeTrainerClicked}
                   className="absolute top-1.5 left-1.5"
                 />
               </button>
@@ -98,4 +97,4 @@ const TrainerTable = () => {
   );
 };
 
-export default TrainerTable;
+export default ClientTable;

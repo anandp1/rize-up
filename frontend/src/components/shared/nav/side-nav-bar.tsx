@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import classNames from "classnames";
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 
 const SideNavBar = () => {
   const router = useRouter();
@@ -18,19 +19,17 @@ const SideNavBar = () => {
   const [selectedNavItem, setSelectedNavItem] = useState(
     !pageName || pageName === "" ? "Dashboard" : pageName
   );
+  const session = useSession();
+  const { data: sessionData } = session;
+  const role = sessionData?.user?.name;
+
+  if (!role) return <p>loading</p>;
 
   const classes = {
     icon: "absolute top-1.5 left-1.5",
   };
-
-  const handleNavItemClicked = (name: string) => {
-    setSelectedNavItem(name);
-    if (name === "Dashboard") {
-      router.push("/");
-      return;
-    }
-
-    router.push(`/${name.toLowerCase()}`);
+  const signOutClicked = () => {
+    signOut();
   };
 
   const navItems = [
@@ -63,7 +62,7 @@ const SideNavBar = () => {
         />
       ),
       link: "/clients",
-      roles: [SignInRole.MANAGER, SignInRole.FRONT_DESK, SignInRole.TRAINER],
+      roles: [SignInRole.MANAGER, SignInRole.FRONT_DESK],
     },
     {
       name: "Trainer",
@@ -76,12 +75,7 @@ const SideNavBar = () => {
         />
       ),
       link: "/trainer",
-      roles: [
-        SignInRole.MANAGER,
-        SignInRole.FRONT_DESK,
-        SignInRole.TRAINER,
-        SignInRole.MEMBER,
-      ],
+      roles: [SignInRole.MANAGER, SignInRole.FRONT_DESK, SignInRole.MEMBER],
     },
     {
       name: "Schedule",
@@ -113,41 +107,51 @@ const SideNavBar = () => {
       ),
       link: "/settings",
       roles: [
-        SignInRole.MANAGER,
-        SignInRole.FRONT_DESK,
-        SignInRole.TRAINER,
-        SignInRole.MEMBER,
+        SignInRole.MANAGER as string,
+        SignInRole.FRONT_DESK as string,
+        SignInRole.TRAINER as string,
+        SignInRole.MEMBER as string,
       ],
     },
   ];
   return (
     <div className="flex flex-col px-5">
-      <p className="mt-6 mb-16 text-violet-900 font-semibold">Rize Up</p>
+      <div className="mt-6 mb-16">
+        <p className="text-violet-900 font-semibold">Rize Up</p>
+        <button
+          onClick={signOutClicked}
+          className="text-xs ml-1 text-gray-500 hover:underline"
+        >
+          Sign out
+        </button>
+      </div>
       <div className="flex flex-col gap-y-7">
         {navItems.map((item) => {
           return (
-            <Link passHref key={item.name} href={`${item.link}`}>
-              <div
-                className={classNames(
-                  "mx-auto relative bg-slate-100 w-7 h-7 rounded-sm",
-                  selectedNavItem.toLowerCase() === item.name.toLowerCase()
-                    ? "bg-violet-900 shadow-2xl"
-                    : ""
-                )}
-              >
-                {item.icon}
-              </div>
-              <p
-                className={classNames(
-                  "text-xs text-center mt-1",
-                  selectedNavItem.toLowerCase() === item.name.toLowerCase()
-                    ? "font-medium"
-                    : ""
-                )}
-              >
-                {item.name}
-              </p>
-            </Link>
+            item.roles.includes(role) && (
+              <Link passHref key={item.name} href={`${item.link}`}>
+                <div
+                  className={classNames(
+                    "mx-auto relative bg-slate-100 w-7 h-7 rounded-sm",
+                    selectedNavItem.toLowerCase() === item.name.toLowerCase()
+                      ? "bg-violet-900 shadow-2xl"
+                      : ""
+                  )}
+                >
+                  {item.icon}
+                </div>
+                <p
+                  className={classNames(
+                    "text-xs text-center mt-1",
+                    selectedNavItem.toLowerCase() === item.name.toLowerCase()
+                      ? "font-medium"
+                      : ""
+                  )}
+                >
+                  {item.name}
+                </p>
+              </Link>
+            )
           );
         })}
       </div>
