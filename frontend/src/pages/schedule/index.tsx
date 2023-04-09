@@ -5,6 +5,8 @@ import { AiOutlinePlus } from "react-icons/ai";
 
 import ScheduleInfo from "../../components/member/schedule-info";
 import Layout from "../../components/shared/layout";
+import ScheduleInfoTrainer from "../../components/trainer/schedule-info";
+import { SignInRole } from "../sign-in";
 
 interface ScheduleProps {
   username: string;
@@ -24,15 +26,18 @@ const Schedule: React.FC<ScheduleProps> = ({
         <div className={classes.containers}>
           <div className="flex flex-row">
             <div className="text-2xl font-bold">Your Schedule</div>
-            <Link passHref className="ml-auto" href="/schedule/add">
-              <button className="text-sm bg-orange-500 rounded-md flex flex-row px-4 py-2">
-                <AiOutlinePlus className="text-white my-auto ml-1 mr-2" />
-                <p className="text-white">Add Class</p>
-              </button>
-            </Link>
+            {role === SignInRole.MEMBER && (
+              <Link passHref className="ml-auto" href="/schedule/add">
+                <button className="text-sm bg-orange-500 rounded-md flex flex-row px-4 py-2">
+                  <AiOutlinePlus className="text-white my-auto ml-1 mr-2" />
+                  <p className="text-white">Add Class</p>
+                </button>
+              </Link>
+            )}
           </div>
         </div>
-        <ScheduleInfo />
+        {role === SignInRole.MEMBER && <ScheduleInfo />}
+        {role === SignInRole.TRAINER && <ScheduleInfoTrainer />}
       </div>
     </Layout>
   );

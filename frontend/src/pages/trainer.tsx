@@ -2,7 +2,7 @@ import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 
 import Layout from "../components/shared/layout";
-import TrainerInfo from "../components/trainer/trainer-info";
+import TrainerInfo from "../components/member/trainer-info";
 
 interface TrainerProps {
   username: string;
