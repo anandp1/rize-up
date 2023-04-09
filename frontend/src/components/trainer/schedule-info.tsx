@@ -1,6 +1,12 @@
 import { AiOutlineEye } from "react-icons/ai";
 
-const ScheduleInfoTrainer = () => {
+interface ScheduleInfoTrainerProps {
+  trainerEmail: string;
+}
+
+const ScheduleInfoTrainer: React.FC<ScheduleInfoTrainerProps> = ({
+  trainerEmail,
+}: ScheduleInfoTrainerProps) => {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 sm:mx-8">

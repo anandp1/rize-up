@@ -1,6 +1,7 @@
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { AiOutlinePlus } from "react-icons/ai";
 
 import ScheduleInfo from "../../components/member/schedule-info";
@@ -20,6 +21,13 @@ const Schedule: React.FC<ScheduleProps> = ({
   const classes = {
     containers: "bg-white rounded-lg flex flex-col p-5",
   };
+
+  const router = useRouter();
+  const trainerEmail = router.query.trainerEmail as string;
+  if (SignInRole.FRONT_DESK === role && !trainerEmail) {
+    router.push("/404");
+  }
+
   return (
     <Layout>
       <div className="flex flex-col gap-y-5">
@@ -37,7 +45,10 @@ const Schedule: React.FC<ScheduleProps> = ({
           </div>
         </div>
         {role === SignInRole.MEMBER && <ScheduleInfo />}
-        {role === SignInRole.TRAINER && <ScheduleInfoTrainer />}
+        {role === SignInRole.TRAINER ||
+          (role === SignInRole.FRONT_DESK && (
+            <ScheduleInfoTrainer trainerEmail={trainerEmail ?? username} />
+          ))}
       </div>
     </Layout>
   );

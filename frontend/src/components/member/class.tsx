@@ -1,9 +1,14 @@
 import { Disclosure, Transition } from "@headlessui/react";
 import { AiOutlineUp } from "react-icons/ai";
+import { SignInRole } from "../../pages/sign-in";
 
 import Section from "./section";
 
-const Class = () => {
+interface ClassProps {
+  usedBy?: SignInRole;
+}
+
+const Class: React.FC<ClassProps> = ({ usedBy }: ClassProps) => {
   const classes = {
     container: "bg-white rounded-lg flex flex-col p-5 mx-6",
     header: "flex justify-between items-center cursor-pointer",
@@ -11,6 +16,7 @@ const Class = () => {
     descriptionText: "text-sm text-gray-500 font-bold",
   };
 
+  // api to get all classes but then exclude the ones that the user is already in (this should be passed as a prop)
   return (
     <Disclosure>
       {({ open }) => (
@@ -36,7 +42,7 @@ const Class = () => {
             leaveTo="transform scale-95 opacity-0"
           >
             <div className="flex flex-col gap-y-2">
-              <Section />
+              <Section usedBy={usedBy} />
             </div>
           </Transition>
         </>

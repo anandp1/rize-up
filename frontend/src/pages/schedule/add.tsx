@@ -1,29 +1,31 @@
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
+
 import Class from "../../components/member/class";
-
-import ScheduleInfo from "../../components/member/schedule-info";
 import Layout from "../../components/shared/layout";
+import { SignInRole } from "../sign-in";
 
-interface ScheduleProps {
+interface AddClassProps {
   username: string;
   role: string;
 }
 
-const Schedule: React.FC<ScheduleProps> = ({
+const AddClass: React.FC<AddClassProps> = ({
   username,
   role,
-}: ScheduleProps) => {
+}: AddClassProps) => {
   const classes = {
     containers: "bg-white rounded-lg flex flex-col p-5",
   };
+
+  // pass in class all classes this user is enrolled in
   return (
     <Layout>
       <div className="flex flex-col gap-y-5">
         <div className={classes.containers}>
           <div className="text-2xl font-bold">Our Classes</div>
         </div>
-        <Class />
+        <Class usedBy={SignInRole.MEMBER} />
       </div>
     </Layout>
   );
@@ -52,4 +54,4 @@ const getServerSideProps: GetServerSideProps = async (context) => {
 
 export { getServerSideProps };
 
-export default Schedule;
+export default AddClass;
