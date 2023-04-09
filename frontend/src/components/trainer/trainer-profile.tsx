@@ -1,11 +1,19 @@
-const TrainerProfile = () => {
+import Link from "next/link";
+import { SignInRole } from "../../pages/sign-in";
+
+interface TrainerProfileProps {
+  usedBy?: SignInRole;
+}
+
+const TrainerProfile: React.FC<TrainerProfileProps> = ({
+  usedBy,
+}: TrainerProfileProps) => {
   const classes = {
     containers: "bg-white rounded-lg shadow-lg p-6 mx-8",
   };
 
-  const addTrainer = () => {
-    // Add API to add trainer to the member
-  };
+  // API to get trainer by trainer email or id or whatever
+  // replace testfornow in the mail to a actual email returned from the API
 
   return (
     <div className={classes.containers}>
@@ -13,12 +21,17 @@ const TrainerProfile = () => {
         <div className="w-full">
           <span className="flex flex-row">
             <h2 className="text-xl font-bold mb-1">Joe</h2>
-            {/* <button
-              onClick={addTrainer}
-              className="ml-auto text-sm bg-orange-500 rounded-md flex flex-row px-4 py-2"
-            >
-              <p className="text-white">Edit Profile</p>
-            </button> */}
+            {usedBy === SignInRole.FRONT_DESK && (
+              <Link
+                passHref
+                className="ml-auto"
+                href={`/schedule?trainerEmail=${"testfornow"}`}
+              >
+                <button className="text-sm bg-orange-500 rounded-md flex flex-row px-4 py-2">
+                  <p className="text-white">View Schedule</p>
+                </button>
+              </Link>
+            )}
           </span>
           <p className="text-gray-500 text-sm">
             Personal Trainer • joe@example.com • 35 • Male

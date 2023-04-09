@@ -1,30 +1,28 @@
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 
-import Layout from "../components/shared/layout";
-import TrainerInfo from "../components/member/trainer-info";
-import { SignInRole } from "./sign-in";
-import TrainerProfile from "../components/trainer/trainer-profile";
+import Class from "../../components/member/class";
+import Layout from "../../components/shared/layout";
+import { SignInRole } from "../sign-in";
 
-interface TrainerProps {
+interface ClassesProps {
   username: string;
   role: string;
 }
 
-const Trainer: React.FC<TrainerProps> = ({ username, role }: TrainerProps) => {
+const Classes: React.FC<ClassesProps> = ({ username, role }: ClassesProps) => {
   const classes = {
     containers: "bg-white rounded-lg flex flex-col p-5",
   };
+
+  // pass in class all classes this user is enrolled in
   return (
     <Layout>
       <div className="flex flex-col gap-y-5">
         <div className={classes.containers}>
-          <div className="text-2xl font-bold">Our Trainers</div>
+          <div className="text-2xl font-bold">Our Classes</div>
         </div>
-        {role === SignInRole.MEMBER && <TrainerInfo />}
-        {role === SignInRole.FRONT_DESK && (
-          <TrainerProfile usedBy={SignInRole.FRONT_DESK} />
-        )}
+        <Class />
       </div>
     </Layout>
   );
@@ -53,4 +51,4 @@ const getServerSideProps: GetServerSideProps = async (context) => {
 
 export { getServerSideProps };
 
-export default Trainer;
+export default Classes;
