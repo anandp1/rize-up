@@ -1,5 +1,6 @@
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
+import FrontDeskDashboard from "../components/dashboard/front-desk/front-desk-dashboard";
 import MemberDashboard from "../components/dashboard/member/member-dashboard";
 import TrainerDashboard from "../components/dashboard/trainer/trainer-dashboard";
 
@@ -16,7 +17,7 @@ const Home: React.FC<HomeProps> = ({ username, role }: HomeProps) => {
     <Layout>
       {role === SignInRole.MANAGER && <p> Hello Manager</p>}
       {role === SignInRole.MEMBER && <MemberDashboard />}
-      {role === SignInRole.FRONT_DESK && <p> Hello Front Desk</p>}
+      {role === SignInRole.FRONT_DESK && <FrontDeskDashboard />}
       {role === SignInRole.TRAINER && <TrainerDashboard />}
     </Layout>
   );
