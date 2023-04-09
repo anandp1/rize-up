@@ -127,12 +127,14 @@ public class ManagerTable {
                 Class c;
                 while(i.hasNext()){
                     c = i.next();
+                    
                     try (PreparedStatement statement2 = connection.prepareStatement(
                             "INSERT INTO NO_REGISTERED (count, Sec_no, class_name, timestamp) VALUES (?,?,?,?)")) {
-                        statement.setInt(1, c.getJoined());
-                        statement.setInt(2, c.getSec());
-                        statement.setString(3, c.getName());
-                        statement.setTimestamp(4, time);
+                        statement2.setInt(1, c.getJoined());
+                        statement2.setInt(2, c.getSec());
+                        statement2.setString(3, c.getName());
+                        statement2.setTimestamp(4, time);
+                        statement2.executeUpdate();
                     }
                 }
                 return report;

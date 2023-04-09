@@ -127,4 +127,137 @@ public class TrainerTable {
         return "Could not update trainer"; // return null if no member found with the given email and password
     }
 
+    //Get Trainer profile BIO
+    public String getTrainerProfile(String email) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT about_me FROM PROFILE WHERE trainer_email = ? ")) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("about_me");
+                }
+            }
+        }
+        return ""; // return null if no member found with the given email and password
+    }
+    //Add trainer profile
+    public String addTrainerProfile(String email, String about_me) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO PROFILE(about_me, trainer_email) VALUE (?,?)")) {
+            statement.setString(1, about_me);
+            statement.setString(2, email);
+            if (statement.executeUpdate()>0) {
+
+                return "Succesfully added Trainer interest";
+            }
+        }
+        return "Could not add trainer interest"; 
+    }
+    //delete trainer profile
+    public String removeTrainerProfile(String email, String about_me) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM PROFILE WHERE about_me = ? AND trainer_email = ?")) {
+            statement.setString(1, about_me);
+            statement.setString(2, email);
+            if (statement.executeUpdate()>0) {
+
+                return "Succesfully deleted Trainer profile";
+            }
+        }
+        return "Could not delete trainer profile"; 
+    }
+    //Get trainer interests
+    public ArrayList<String> getTrainerInterests(String Temail) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT interest FROM TRAINER_INTERESTS WHERE trainer_email = ?")) {
+            statement.setString(1, Temail);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                if (resultSet.next()) {
+                    ArrayList<String> result = new ArrayList<String>();
+                    do{
+                        //String name, int length, float cost, int sec, String time, int day, int capacity, int room, String Fname, String Lname
+                        result.add(resultSet.getString("interest"));
+                    }while(resultSet.next());
+                    return result;
+                }
+            }
+        }
+        return null; // return null if no classes found for given email
+    }
+    //Add trainer interest
+    public String addTrainerInterest(String email, String interest) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO TRAINER_INTEREST(interest, trainer_email) VALUE (?,?)")) {
+            statement.setString(1, interest);
+            statement.setString(2, email);
+            if (statement.executeUpdate()>0) {
+
+                return "Succesfully added Trainer interest";
+            }
+        }
+        return "Could not add trainer interest"; 
+    }
+    //delete trainer interest
+    public String removeTrainerInterest(String email, String interest) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM TRAINER_EXPERIENCE WHERE description = ? AND trainer_email = ?")) {
+            statement.setString(1, interest);
+            statement.setString(2, email);
+            if (statement.executeUpdate()>0) {
+
+                return "Succesfully deleted Trainer interest";
+            }
+        }
+        return "Could not delete trainer interest"; 
+    }
+    //Get trainer experience
+    public ArrayList<TrainerExperience> getTrainerExperience(String Temail) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM TRAINER_EXPERIENCE WHERE trainer_email = ?")) {
+            statement.setString(1, Temail);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                if (resultSet.next()) {
+                    ArrayList<TrainerExperience> result = new ArrayList<TrainerExperience>();
+                    do{
+                        //String name, int length, float cost, int sec, String time, int day, int capacity, int room, String Fname, String Lname
+                        result.add(new TrainerExperience(resultSet.getString("trainer_email"), resultSet.getString("description"), resultSet.getInt("years_of_experience"), resultSet.getString("education")));
+                    }while(resultSet.next());
+                    return result;
+                }
+            }
+        }
+        return null; // return null if no classes found for given email
+    }
+    //add trainer experience
+    public String addTrainerExperience(String email, String description, int years, String education) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO TRAINER_EXPERIENCE(description, years_of_experience, education, trainer_email) VALUES(?,?,?,?)")) {
+            statement.setString(1, description);
+            statement.setInt(2, years);
+            statement.setString(3, education);
+            statement.setString(4, email);
+            if (statement.executeUpdate()>0) {
+
+                return "Succesfully added Trainer experience";
+            }
+        }
+        return "Could not add trainer experience"; 
+    }
+    //delete trainer experience
+    public String removeTrainerExperience(String email, String description) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM TRAINER_EXPERIENCE WHERE description = ? AND trainer_email = ?")) {
+            statement.setString(1, description);
+            statement.setString(2, email);
+            if (statement.executeUpdate()>0) {
+
+                return "Succesfully deleted Trainer experience";
+            }
+        }
+        return "Could not delete trainer experience"; 
+    }
 }
