@@ -18,6 +18,7 @@ public class ManagerTable {
         this.connection = database;
     }
 
+    //verify manager for login
     public Manager getManager(String email, String password) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM MANAGER WHERE email = ? AND password = ?")) {

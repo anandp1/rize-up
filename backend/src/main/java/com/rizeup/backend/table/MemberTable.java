@@ -14,7 +14,7 @@ public class MemberTable {
     public MemberTable(Connection database) {
         this.connection = database;
     }
-
+    //get all members
     public List<Member> getAllMembers() throws SQLException {
         List<Member> members = new ArrayList<>();
 
@@ -31,7 +31,7 @@ public class MemberTable {
         }
         return members;
     }
-
+    //verify member for login
     public Member getMember(String email, String password) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM MEMBER WHERE email = ? AND password = ?")) {

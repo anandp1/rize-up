@@ -12,6 +12,7 @@ public class FrontDeskTable {
         this.connection = database;
     }
 
+    //verify Front desk staff for login
     public FrontDesk getFrontDesk(String email, String password) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM FRONT_DESK WHERE email = ? AND password = ?")) {
