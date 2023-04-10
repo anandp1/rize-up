@@ -52,4 +52,21 @@ public class TrainsTable {
         }
         return null; 
     }
+    //get all trainers that train a member
+    public ArrayList<String> getMembersTrainers(String memail) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT trainer_email FROM TRAINS WHERE member_email =? ")) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                if (resultSet.next()) {
+                    ArrayList<String> result = new ArrayList<String>();
+                    do{
+                        result.add(resultSet.getString("trainer_email"));
+                    }while(resultSet.next());
+                    return result;
+                }
+            }
+        }
+        return null; 
+    }
 }
