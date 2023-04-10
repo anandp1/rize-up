@@ -91,7 +91,7 @@ public class MemberTable {
         }
         return "Could not add member"; // return null if no member found with the given email and password
     }
-
+    //get a member
     public Member getMemberInfo(String email) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM MEMBER WHERE email = ? ")) {

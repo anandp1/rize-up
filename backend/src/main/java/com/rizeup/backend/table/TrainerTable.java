@@ -32,7 +32,7 @@ public class TrainerTable {
         return null; // return null if no member found with the given email and password
     }
 
-    //get all Trainers personal info for viewing/editing purposes
+    //get Trainers personal info for viewing/editing purposes
     public Trainer getTrainer(String email) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM TRAINER WHERE email = ? ")) {
@@ -43,6 +43,26 @@ public class TrainerTable {
                             resultSet.getInt("age"),
                             resultSet.getString("gender").charAt(0), resultSet.getString("first_name"),resultSet.getString("middle_name"),
                             resultSet.getString("last_name"), resultSet.getInt("gymId"));
+                }
+            }
+        }
+        return null; // return null if no member found with the given email and password
+    }
+    //get all Trainers
+    public ArrayList<Trainer> getAllTrainers(int gym_id) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM TRAINER WHERE gym_id = ? ")) {
+            statement.setInt(1, gym_id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    ArrayList<Trainer> result = new ArrayList<Trainer>();
+                    do{
+                        result.add(new Trainer(resultSet.getString("email"), resultSet.getDate("birth_date"),
+                            resultSet.getInt("age"),
+                            resultSet.getString("gender").charAt(0), resultSet.getString("first_name"),resultSet.getString("middle_name"),
+                            resultSet.getString("last_name"), resultSet.getInt("gymId")));
+                    }while(resultSet.next());
+                    return result;
                 }
             }
         }
@@ -260,4 +280,6 @@ public class TrainerTable {
         }
         return "Could not delete trainer experience"; 
     }
+
+
 }
