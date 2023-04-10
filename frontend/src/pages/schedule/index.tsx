@@ -24,7 +24,10 @@ const Schedule: React.FC<ScheduleProps> = ({
 
   const router = useRouter();
   const trainerEmail = router.query.trainerEmail as string;
-  if ((SignInRole.FRONT_DESK === role && !trainerEmail) || SignInRole.MANAGER) {
+  if (
+    (SignInRole.FRONT_DESK === role && !trainerEmail) ||
+    SignInRole.MANAGER === role
+  ) {
     router.push("/404");
   }
 
@@ -45,10 +48,9 @@ const Schedule: React.FC<ScheduleProps> = ({
           </div>
         </div>
         {role === SignInRole.MEMBER && <ScheduleInfo />}
-        {role === SignInRole.TRAINER ||
-          (role === SignInRole.FRONT_DESK && (
-            <ScheduleInfoTrainer trainerEmail={trainerEmail ?? username} />
-          ))}
+        {(role === SignInRole.TRAINER || role === SignInRole.FRONT_DESK) && (
+          <ScheduleInfoTrainer trainerEmail={trainerEmail ?? username} />
+        )}
       </div>
     </Layout>
   );
