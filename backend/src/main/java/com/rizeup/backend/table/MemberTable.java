@@ -24,7 +24,8 @@ public class MemberTable {
                 Member member = new Member(resultSet.getString("email"), resultSet.getDate("birth_date"),
                         resultSet.getInt("age"),
                         resultSet.getString("gender").charAt(0), resultSet.getString("first_name"),
-                        resultSet.getString("last_name"), resultSet.getDate("date_joined"));
+                        resultSet.getString("last_name"), resultSet.getDate("date_joined"),
+                        resultSet.getString("membership_name"));
                 members.add(member);
             }
         }
@@ -41,7 +42,8 @@ public class MemberTable {
                     return new Member(resultSet.getString("email"), resultSet.getDate("birth_date"),
                             resultSet.getInt("age"),
                             resultSet.getString("gender").charAt(0), resultSet.getString("first_name"),
-                            resultSet.getString("last_name"), resultSet.getDate("date_joined"));
+                            resultSet.getString("last_name"), resultSet.getDate("date_joined"),
+                            resultSet.getString("membership_name"));
                 }
             }
         }
@@ -108,7 +110,8 @@ public class MemberTable {
                     return new Member(resultSet.getString("email"), resultSet.getDate("birth_date"),
                             resultSet.getInt("age"),
                             resultSet.getString("gender").charAt(0), resultSet.getString("first_name"),
-                            resultSet.getString("last_name"), resultSet.getDate("date_joined"));
+                            resultSet.getString("last_name"), resultSet.getDate("date_joined"),
+                            resultSet.getString("membership_name"));
                 }
             }
         }

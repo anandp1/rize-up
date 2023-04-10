@@ -307,20 +307,38 @@ public class TrainerTable {
         return "Could not delete trainer experience";
     }
 
-    public HashMap<Trainer, HashMap<String, Object>> getAllTrainersInformation(int gymId) throws SQLException {
+    public HashMap<String, HashMap<String, Object>> getAllTrainersInformation(int gymId) throws SQLException {
         ArrayList<Trainer> trainers = getAllTrainers(gymId);
         if (trainers == null) {
             return null;
         }
 
-        HashMap<Trainer, HashMap<String, Object>> result = new HashMap<Trainer, HashMap<String, Object>>();
+        HashMap<String, HashMap<String, Object>> result = new HashMap<String, HashMap<String, Object>>();
         for (Trainer trainer : trainers) {
             HashMap<String, Object> trainerInfo = new HashMap<String, Object>();
             trainerInfo.put("about_me", getTrainerProfile(trainer.getEmail()));
             trainerInfo.put("interests", getTrainerInterests(trainer.getEmail()));
             trainerInfo.put("experience", getTrainerExperience(trainer.getEmail()));
-            result.put(trainer, trainerInfo);
+            trainerInfo.put("trainerInfo", trainer);
+            result.put(trainer.getEmail(), trainerInfo);
         }
+
+        return result;
+    }
+
+    public HashMap<String, Object> getTrainerFullProfile(String trainerEmail) throws SQLException {
+        Trainer trainer = getTrainer(trainerEmail);
+        if (trainer == null) {
+            return null;
+        }
+
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        HashMap<String, Object> trainerInfo = new HashMap<String, Object>();
+        trainerInfo.put("about_me", getTrainerProfile(trainer.getEmail()));
+        trainerInfo.put("interests", getTrainerInterests(trainer.getEmail()));
+        trainerInfo.put("experience", getTrainerExperience(trainer.getEmail()));
+        trainerInfo.put("trainerInfo", trainer);
+        result.put(trainer.getEmail(), trainerInfo);
 
         return result;
     }

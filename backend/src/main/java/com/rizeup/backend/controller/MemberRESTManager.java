@@ -107,7 +107,7 @@ public class MemberRESTManager {
         }
     }
 
-    @PostMapping("/trainer/chat/add/{trainerEmail}")
+    @PostMapping("/trainer/chat/add")
     @ResponseStatus(HttpStatus.OK)
     public String getChatHistory(@RequestBody Message messageBody) {
         try {
@@ -144,7 +144,7 @@ public class MemberRESTManager {
 
     @GetMapping("/trainer/all/{gymId}")
     @ResponseStatus(HttpStatus.OK)
-    public HashMap<Trainer, HashMap<String, Object>> getAllTrainers(@PathVariable String gymId) {
+    public HashMap<String, HashMap<String, Object>> getAllTrainers(@PathVariable String gymId) {
         try {
             int gymIdInt = Integer.parseInt(gymId);
 
@@ -203,6 +203,17 @@ public class MemberRESTManager {
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "addClass - Error adding class");
+        }
+    }
+
+    @GetMapping("/schedule/{memberEmail}")
+    @ResponseStatus(HttpStatus.OK)
+    public ArrayList<ClassSection> getSchedule(@PathVariable String memberEmail) {
+        try {
+            return memberTable.getClassesByMember(memberEmail);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error getting trainer schedule");
         }
     }
 
