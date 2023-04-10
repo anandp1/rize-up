@@ -22,7 +22,7 @@ const Classes: React.FC<ClassesProps> = ({ username, role }: ClassesProps) => {
         <div className={classes.containers}>
           <div className="text-2xl font-bold">Our Classes</div>
         </div>
-        <Class usedBy={SignInRole.MANAGER} />
+        <Class usedBy={role as SignInRole} />
       </div>
     </Layout>
   );

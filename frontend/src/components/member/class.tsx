@@ -35,7 +35,7 @@ const Class: React.FC<ClassProps> = ({ usedBy }: ClassProps) => {
                 className={`${open ? "transform rotate-180" : ""} w-5 h-5`}
               />
             </Disclosure.Button>
-            {SignInRole.MANAGER && (
+            {SignInRole.MANAGER === usedBy && (
               <button
                 onClick={removeClass}
                 className="px-4 py-2 bg-red-500 text-white rounded-md mt-3 mb-1 ml-auto w-1/3"
