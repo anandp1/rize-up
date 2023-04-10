@@ -1,28 +1,30 @@
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
+import ClientInfo from "../components/front-desk/client-info";
+import EmployeeInfo from "../components/manager/employee-info";
 
-import Class from "../../components/member/class";
-import Layout from "../../components/shared/layout";
-import { SignInRole } from "../sign-in";
+import Layout from "../components/shared/layout";
 
-interface ClassesProps {
+interface EmployeesProps {
   username: string;
   role: string;
 }
 
-const Classes: React.FC<ClassesProps> = ({ username, role }: ClassesProps) => {
+const Employees: React.FC<EmployeesProps> = ({
+  username,
+  role,
+}: EmployeesProps) => {
   const classes = {
     containers: "bg-white rounded-lg flex flex-col p-5",
   };
-
-  // pass in class all classes this user is enrolled in
+  // api to get all employees
   return (
     <Layout>
       <div className="flex flex-col gap-y-5">
         <div className={classes.containers}>
-          <div className="text-2xl font-bold">Our Classes</div>
+          <div className="text-2xl font-bold">All Employees</div>
         </div>
-        <Class usedBy={SignInRole.MANAGER} />
+        <EmployeeInfo />
       </div>
     </Layout>
   );
@@ -51,4 +53,4 @@ const getServerSideProps: GetServerSideProps = async (context) => {
 
 export { getServerSideProps };
 
-export default Classes;
+export default Employees;

@@ -24,7 +24,7 @@ const Schedule: React.FC<ScheduleProps> = ({
 
   const router = useRouter();
   const trainerEmail = router.query.trainerEmail as string;
-  if (SignInRole.FRONT_DESK === role && !trainerEmail) {
+  if ((SignInRole.FRONT_DESK === role && !trainerEmail) || SignInRole.MANAGER) {
     router.push("/404");
   }
 
