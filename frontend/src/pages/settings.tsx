@@ -1,11 +1,15 @@
 import type { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { Listbox } from "@headlessui/react";
+import useSWR from "swr";
 
 import MemberInfo from "../components/member/member-info";
 import Layout from "../components/shared/layout";
 import Model from "../components/model/model";
+import { Customer } from "../../interfaces/interface";
+import { fetcher } from "../../utils/fetcher";
+import axios from "axios";
 
 interface SettingsProps {
   username: string;
@@ -16,17 +20,48 @@ const Settings: React.FC<SettingsProps> = ({
   username,
   role,
 }: SettingsProps) => {
-  const memberships = ["Regular", "Premium", "Gold"];
+  const memberships = ["Basic", "Premium", "Gold"];
 
   const [updateInfoModel, setUpdateInfoModel] = useState(false);
   const [selectedMembership, setSelectedMembership] = useState(memberships[0]);
-  const [email, setEmail] = useState("johndoe@mail.com");
-  const deleteAccount = () => {
-    // API to delete account
+  const [email, setEmail] = useState("");
+
+  const {
+    data: memberInfo,
+    error,
+    mutate: revalidateData,
+  } = useSWR<Customer>(
+    `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/account/${username}`,
+    fetcher
+  );
+
+  if (error) return <div>Failed to load</div>;
+  if (!memberInfo) return <div>Loading...</div>;
+
+  const deleteAccount = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/account/delete/${username}`
+      );
+
+      alert(response.data.message);
+      signOut();
+    } catch {
+      console.log("Error deleting account");
+    }
   };
 
-  const updateInformation = () => {
-    // API to update information
+  const updateInformation = async () => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/account/update/${username}/${selectedMembership}`
+      );
+
+      alert("Updated information successfully");
+      revalidateData();
+    } catch {
+      alert("Error updating information");
+    }
     setUpdateInfoModel(false);
   };
 
@@ -39,7 +74,7 @@ const Settings: React.FC<SettingsProps> = ({
             <input
               className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
               type="email"
-              value={email}
+              value={memberInfo.email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Listbox
@@ -95,7 +130,7 @@ const Settings: React.FC<SettingsProps> = ({
         </Model>
       )}
       <div className="flex flex-col gap-y-5 h-screen justify-center">
-        <MemberInfo />
+        <MemberInfo memberInfo={memberInfo} />
         <div className="mt-6 flex justify-center gap-x-4">
           <button
             onClick={() => setUpdateInfoModel(true)}
