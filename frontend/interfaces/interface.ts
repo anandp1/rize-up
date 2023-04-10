@@ -35,3 +35,21 @@ export interface Message {
   tEmail: string;
   mEmail: string;
 }
+
+interface TrainerInformation {
+  about_me: string;
+  interests: string[];
+  experience: TrainerExperience[];
+  trainerInfo: Trainer;
+}
+
+interface TrainerExperience {
+  trainer_email: string;
+  description: string;
+  years_of_experience: number;
+  education: string;
+}
+
+export interface TrainersInformationMap {
+  [email: string]: TrainerInformation;
+}

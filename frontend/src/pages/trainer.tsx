@@ -21,7 +21,7 @@ const Trainer: React.FC<TrainerProps> = ({ username, role }: TrainerProps) => {
         <div className={classes.containers}>
           <div className="text-2xl font-bold">Our Trainers</div>
         </div>
-        {role === SignInRole.MEMBER && <TrainerInfo />}
+        {role === SignInRole.MEMBER && <TrainerInfo memberEmail={username} />}
         {role === SignInRole.FRONT_DESK && (
           <TrainerProfile usedBy={SignInRole.FRONT_DESK} />
         )}
