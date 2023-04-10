@@ -16,6 +16,10 @@ const Class: React.FC<ClassProps> = ({ usedBy }: ClassProps) => {
     descriptionText: "text-sm text-gray-500 font-bold",
   };
 
+  const removeClass = () => {
+    // api to remove class
+  };
+
   // api to get all classes but then exclude the ones that the user is already in (this should be passed as a prop)
   return (
     <Disclosure>
@@ -31,6 +35,14 @@ const Class: React.FC<ClassProps> = ({ usedBy }: ClassProps) => {
                 className={`${open ? "transform rotate-180" : ""} w-5 h-5`}
               />
             </Disclosure.Button>
+            {SignInRole.MANAGER && (
+              <button
+                onClick={removeClass}
+                className="px-4 py-2 bg-red-500 text-white rounded-md mt-3 mb-1 ml-auto w-1/3"
+              >
+                Remove Class
+              </button>
+            )}
           </div>
 
           <Transition

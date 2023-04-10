@@ -75,7 +75,7 @@ const SideNavBar = () => {
         />
       ),
       link: "/trainer",
-      roles: [SignInRole.MANAGER, SignInRole.MEMBER, SignInRole.FRONT_DESK],
+      roles: [SignInRole.MEMBER, SignInRole.FRONT_DESK],
     },
     {
       name: "Schedule",
@@ -87,7 +87,10 @@ const SideNavBar = () => {
           )}
         />
       ),
-      link: role === SignInRole.FRONT_DESK ? "schedule/classes" : "/schedule",
+      link:
+        role === SignInRole.FRONT_DESK || role === SignInRole.MANAGER
+          ? "schedule/classes"
+          : "/schedule",
       roles: [
         SignInRole.MANAGER,
         SignInRole.FRONT_DESK,
@@ -106,7 +109,7 @@ const SideNavBar = () => {
         />
       ),
       link: "/settings",
-      roles: [SignInRole.MANAGER as string, SignInRole.MEMBER as string],
+      roles: [SignInRole.MEMBER as string],
     },
     {
       name: "Profile",
@@ -120,6 +123,19 @@ const SideNavBar = () => {
       ),
       link: "/profile",
       roles: [SignInRole.TRAINER as string],
+    },
+    {
+      name: "Employees",
+      icon: (
+        <IoPersonOutline
+          className={classNames(
+            classes.icon,
+            selectedNavItem === "employees" ? "text-white" : ""
+          )}
+        />
+      ),
+      link: "/employees",
+      roles: [SignInRole.MANAGER as string],
     },
   ];
   return (
