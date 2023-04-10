@@ -25,6 +25,7 @@ import com.rizeup.backend.table.FrontDeskTable;
 import com.rizeup.backend.table.ManagerTable;
 import com.rizeup.backend.table.MemberTable;
 import com.rizeup.backend.table.TrainerTable;
+import com.rizeup.backend.table.TrainsTable;
 
 @RestController
 @CrossOrigin
@@ -35,6 +36,7 @@ public class MemberRESTManager {
     private TrainerTable trainerTable;
     private ManagerTable managerTable;
     private FrontDeskTable frontDeskTable;
+    private TrainsTable trainsTable;
 
     public MemberRESTManager() {
         try {
@@ -47,6 +49,7 @@ public class MemberRESTManager {
             this.managerTable = new ManagerTable(dbConnect);
             this.frontDeskTable = new FrontDeskTable(dbConnect);
             this.trainerTable = new TrainerTable(dbConnect);
+            this.trainsTable = new TrainsTable(dbConnect);
 
         } catch (DotenvException e) {
             System.err.println("Could not load .env file in root folder!");
@@ -73,8 +76,9 @@ public class MemberRESTManager {
     }
 
     @GetMapping("/trainer/assigned/{memberEmail}")
+    @ResponseStatus(HttpStatus.OK)
     public String getTrainersAssignedToMember(@PathVariable String memberEmail) {
-        return "Trainers Assigned to Member";
+        return "";
     }
 
     @GetMapping("/trainer/chat/{trainerEmail}")
