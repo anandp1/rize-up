@@ -96,7 +96,7 @@ public class TrainerRESTManager {
 
     @GetMapping("/classlist/{sectionName}")
     public String getClassList(@PathVariable String sectionName) {
-        return "Class List";
+        return "ClassSection List";
     }
 
 }

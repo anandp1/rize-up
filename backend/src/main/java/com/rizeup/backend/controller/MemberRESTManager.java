@@ -2,12 +2,15 @@ package com.rizeup.backend.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,13 +20,13 @@ import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvException;
 
 import com.rizeup.backend.Database;
-import com.rizeup.backend.model.FrontDesk;
-import com.rizeup.backend.model.Manager;
+import com.rizeup.backend.model.ClassSection;
 import com.rizeup.backend.model.Member;
+import com.rizeup.backend.model.Message;
 import com.rizeup.backend.model.Trainer;
-import com.rizeup.backend.table.FrontDeskTable;
-import com.rizeup.backend.table.ManagerTable;
+import com.rizeup.backend.table.ClassTable;
 import com.rizeup.backend.table.MemberTable;
+import com.rizeup.backend.table.MessageTable;
 import com.rizeup.backend.table.TrainerTable;
 import com.rizeup.backend.table.TrainsTable;
 
@@ -34,9 +37,9 @@ public class MemberRESTManager {
     public Database database = null;
     private MemberTable memberTable;
     private TrainerTable trainerTable;
-    private ManagerTable managerTable;
-    private FrontDeskTable frontDeskTable;
     private TrainsTable trainsTable;
+    private MessageTable messageTable;
+    private ClassTable classTable;
 
     public MemberRESTManager() {
         try {
@@ -46,10 +49,10 @@ public class MemberRESTManager {
             Connection dbConnect = database.connect();
 
             this.memberTable = new MemberTable(dbConnect);
-            this.managerTable = new ManagerTable(dbConnect);
-            this.frontDeskTable = new FrontDeskTable(dbConnect);
             this.trainerTable = new TrainerTable(dbConnect);
             this.trainsTable = new TrainsTable(dbConnect);
+            this.messageTable = new MessageTable(dbConnect);
+            this.classTable = new ClassTable(dbConnect);
 
         } catch (DotenvException e) {
             System.err.println("Could not load .env file in root folder!");
@@ -64,12 +67,6 @@ public class MemberRESTManager {
         }
     }
 
-    // cant get all trainer profiles, view trainer names, and then click on them to
-    // get details
-
-    // get all membership options and perks
-    // add a trainer to a member
-
     @GetMapping("/test")
     public String home() {
         return "Hello Customer!";
@@ -77,52 +74,186 @@ public class MemberRESTManager {
 
     @GetMapping("/trainer/assigned/{memberEmail}")
     @ResponseStatus(HttpStatus.OK)
-    public String getTrainersAssignedToMember(@PathVariable String memberEmail) {
-        return "";
+    public ArrayList<Trainer> getTrainersAssignedToMember(@PathVariable String memberEmail) {
+        try {
+            ArrayList<String> trainerEmails = trainsTable.getMembersTrainers(memberEmail);
+
+            if (trainerEmails == null) {
+                return new ArrayList<Trainer>();
+            }
+
+            // get all trainer profiles from emails
+            ArrayList<Trainer> trainers = new ArrayList<Trainer>();
+            for (String trainerEmail : trainerEmails) {
+                Trainer trainer = trainerTable.getTrainer(trainerEmail);
+                trainers.add(trainer);
+            }
+
+            return trainers;
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error getting all trainers assigned to member");
+        }
     }
 
-    @GetMapping("/trainer/chat/{trainerEmail}")
-    public String getChatHistory(@PathVariable String trainerEmail) {
-        return "Chat History";
+    @GetMapping("/trainer/chat/history/{trainerEmail}/{memberEmail}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Message> getChatHistory(@PathVariable String trainerEmail, @PathVariable String memberEmail) {
+        try {
+            return messageTable.getMessages(trainerEmail, memberEmail);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error getting chat history");
+        }
     }
 
-    @PostMapping("/trainer/remove/{trainerEmail}")
-    public String deleteTrainer(@PathVariable String trainerEmail) {
-        return "Trainer Deleted";
+    @PostMapping("/trainer/chat/add/{trainerEmail}")
+    @ResponseStatus(HttpStatus.OK)
+    public String getChatHistory(@RequestBody Message messageBody) {
+        try {
+            String response = messageTable.addMessage(messageBody.getTemail(), messageBody.getMemail(),
+                    messageBody.getContent(),
+                    messageBody.getSender(), messageBody.getReceiver());
+            if (response.equals("Message sent successfully")) {
+                return "Message added";
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "getChatHistory - Could not sent message");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error sending message");
+        }
     }
 
-    @GetMapping("/trainer/all")
-    public String getAllTrainers() {
-        return "All Trainers";
+    @PostMapping("/trainer/remove/{trainerEmail}/{memberEmail}")
+    public String deleteTrainer(@PathVariable String trainerEmail, @PathVariable String memberEmail) {
+        try {
+            String response = trainsTable.removeTrainerFromMember(trainerEmail, memberEmail);
+            if (response.equals("Trainer removed from member successfully")) {
+                return "Trainer removed";
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "deleteTrainer - Could not remove trainer");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error removing trainer");
+        }
     }
 
-    @PostMapping("/trainer/add/{trainerEmail}")
-    public String addTrainer(@PathVariable String trainerEmail) {
-        return "Trainer Added";
+    @GetMapping("/trainer/all/{gymId}")
+    @ResponseStatus(HttpStatus.OK)
+    public HashMap<Trainer, HashMap<String, Object>> getAllTrainers(@PathVariable String gymId) {
+        try {
+            int gymIdInt = Integer.parseInt(gymId);
+
+            return trainerTable.getAllTrainersInformation(gymIdInt);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error getting all trainers");
+        }
     }
 
-    @GetMapping("/class/all")
-    public String getAllClasses() {
-        return "All Classes";
+    @PostMapping("/trainer/add/{trainerEmail}/{memberEmail}")
+    @ResponseStatus(HttpStatus.OK)
+    public String addTrainer(@PathVariable String trainerEmail, @PathVariable String memberEmail) {
+        try {
+            String response = trainsTable.addTrainerToMember(trainerEmail, memberEmail);
+            if (response.equals("Trainer added to member successfully")) {
+                return "Trainer added";
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "addTrainer - Could not add trainer");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error adding trainer");
+        }
     }
 
-    @PostMapping("/class/add/{className}")
-    public String addClass(@PathVariable String className) {
-        return "Class Added";
+    @GetMapping("/class/all/{gymId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ArrayList<ClassSection> getAllClasses(@PathVariable String gymId) {
+        try {
+            int gymIdNum = Integer.parseInt(gymId);
+
+            return classTable.getClassScheduleByGym(gymIdNum);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error getting all classes");
+        }
+    }
+
+    @PostMapping("/class/add/{className}/{email}/{sectionId}")
+    @ResponseStatus(HttpStatus.OK)
+    public String addClass(@PathVariable String className, @PathVariable String email,
+            @PathVariable String sectionId) {
+        try {
+            int sectionIdNumber = Integer.parseInt(sectionId);
+
+            String response = classTable.registerMemberForSection(email, className, sectionIdNumber);
+
+            if (response.equals("Registration successful")) {
+                return "Section added";
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "addClass - Could not add class");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "addClass - Error adding class");
+        }
     }
 
     @GetMapping("/account/{memberEmail}")
-    public String getAccountInformation(@PathVariable String memberEmail) {
-        return "Account Information";
+    @ResponseStatus(HttpStatus.OK)
+    public Member getAccountInformation(@PathVariable String memberEmail) {
+        try {
+            Member member = memberTable.getMemberInfo(memberEmail);
+            if (member == null) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "getAccountInformation - Could not get account information");
+            } else {
+                return member;
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "getAccountInformation - Error getting account information");
+        }
     }
 
     @PostMapping("/account/delete/{memberEmail}")
+    @ResponseStatus(HttpStatus.OK)
     public String deleteAccount(@PathVariable String memberEmail) {
-        return "Account Deleted";
+        try {
+            String response = memberTable.removeMember(memberEmail);
+            if (response.equals("Member removed")) {
+                return "Account Deleted";
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "deleteAccount - Could not delete account");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "deleteAccount - Error deleting account");
+        }
     }
 
-    @PostMapping("/account/update/{memberEmail}")
-    public String updateAccount(@PathVariable String memberEmail) {
-        return "Account Updated";
+    @PostMapping("/account/update/{memberEmail}/{membership}")
+    @ResponseStatus(HttpStatus.OK)
+    public String updateAccount(@PathVariable String memberEmail, @PathVariable String membership) {
+        try {
+            String response = memberTable.updateMember(memberEmail, membership);
+            if (response.equals("Member updated successfully")) {
+                return "Account Updated";
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "updateAccount - Could not update account");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "updateAccount - Error updating account");
+        }
     }
 }
