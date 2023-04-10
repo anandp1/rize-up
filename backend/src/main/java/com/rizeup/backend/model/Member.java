@@ -30,13 +30,14 @@ public class Member {
         this.gymId = gymId;
     }
 
-    public Member(String email, Date birthDate, int age, char gender, String firstName, String lastName) {
+    public Member(String email, Date birthDate, int age, char gender, String firstName, String lastName, Date joined) {
         this.email = email;
         this.birthDate = birthDate;
         this.age = age;
         this.gender = gender;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.dateJoined = joined;
 
     }
 
