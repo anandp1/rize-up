@@ -37,7 +37,7 @@ public class TrainerTable {
     // get Trainers personal info for viewing/editing purposes
     public Trainer getTrainer(String email) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM TRAINER WHERE email = ? ")) {
+                "SELECT * FROM TRAINER WHERE email = ?")) {
             statement.setString(1, email);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -45,7 +45,7 @@ public class TrainerTable {
                             resultSet.getInt("age"),
                             resultSet.getString("gender").charAt(0), resultSet.getString("first_name"),
                             resultSet.getString("middle_name"),
-                            resultSet.getString("last_name"), resultSet.getInt("gymId"));
+                            resultSet.getString("last_name"), resultSet.getInt("gym_id"));
                 }
             }
         }
