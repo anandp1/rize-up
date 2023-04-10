@@ -106,10 +106,10 @@ public class MembershipTable {
     //delete a membership
     public String deleteMembership(String name) throws SQLException{
         try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM MEMBERSHIP_PLANS as M, MEMBERSHIP_PERKS as P WHERE M.membership_name = ? AND M.membership_name = P.membership_name")) {
+                "DELETE FROM MEMBERSHIP_PLANS as M WHERE M.membership_name = ?")) {
             statement.setString(1, name);
             if (statement.executeUpdate() >0) {
-                return "Sucessfully delted membership";
+                return "Sucessfully deleted membership";
             }
         }
         return "Could not delete membership"; 
