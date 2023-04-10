@@ -9,7 +9,7 @@ public class TrainsTable {
         this.connection = database;
     }
     
-    //add trainer to member
+    //assign a trainer to member
     public String addTrainerToMember(String temail, String memail) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO TRAINS(trainer_email, member_email) VALUES (?,?)")) {

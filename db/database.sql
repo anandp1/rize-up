@@ -131,7 +131,7 @@ CREATE TABLE MEMBERSHIP_PERKS (
     membership_name VARCHAR(255)  NOT NULL,
     perk VARCHAR(255)  NOT NULL,
     PRIMARY KEY (membership_name, perk),
-    FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS (membership_name)
+    FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS (membership_name) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS GYM_PLANS;
@@ -139,8 +139,8 @@ CREATE TABLE GYM_PLANS (
     membership_name VARCHAR(255)  NOT NULL,
     passcode INT NOT NULL,
     PRIMARY KEY (membership_name, passcode),
-    FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS(membership_name),
-    FOREIGN KEY (passcode) REFERENCES GYM (passcode)
+    FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS(membership_name) ON DELETE CASCADE,
+    FOREIGN KEY (passcode) REFERENCES GYM (passcode) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS MESSAGE;
@@ -152,8 +152,8 @@ CREATE TABLE MESSAGE (
     trainer_email VARCHAR(255)  NOT NULL,
     member_email VARCHAR(255) NOT NULL,
     PRIMARY KEY (sender_name, receiver_name, timestamp),
-    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email),
-    FOREIGN KEY (member_email) REFERENCES MEMBER(email)
+    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email) ON DELETE CASCADE,
+    FOREIGN KEY (member_email) REFERENCES MEMBER(email)ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS TRAINS;
@@ -161,8 +161,8 @@ CREATE TABLE TRAINS (
     member_email VARCHAR(255) NOT NULL,
     trainer_email VARCHAR(255) NOT NULL,
     PRIMARY KEY (member_email, trainer_email),
-    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email),
-    FOREIGN KEY (member_email) REFERENCES MEMBER(email)
+    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email) ON DELETE CASCADE,
+    FOREIGN KEY (member_email) REFERENCES MEMBER(email) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS PROFILE;
@@ -170,7 +170,7 @@ CREATE TABLE PROFILE(
     trainer_email VARCHAR(255) NOT NULL,
     about_me VARCHAR(255) NOT NULL,
     PRIMARY KEY (trainer_email),
-    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email)
+    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS TRAINER_INTERESTS;
@@ -178,7 +178,7 @@ CREATE TABLE TRAINER_INTERESTS (
     interest VARCHAR(255) NOT NULL,
     trainer_email VARCHAR(255) NOT NULL,
     PRIMARY KEY (interest, trainer_email),
-    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email)
+    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS TRAINER_EXPERIENCE;
@@ -188,7 +188,7 @@ CREATE TABLE TRAINER_EXPERIENCE(
     education VARCHAR(255),
     trainer_email VARCHAR(255) NOT NuLL,
     PRIMARY KEY (description, trainer_email),
-    FOREIGN KEY (trainer_email) REFERENCES TRAINER (email)
+    FOREIGN KEY (trainer_email) REFERENCES TRAINER (email) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS CLASS;
@@ -211,7 +211,7 @@ CREATE TABLE SECTION(
     Room_number INT,
     class_name VARCHAR(255) NOT NULL,
     PRIMARY KEY (Sec_no, class_name),
-    FOREIGN KEY (class_name) REFERENCES CLASS(name)
+    FOREIGN KEY (class_name) REFERENCES CLASS(name) ON DELETE CASCADE
 );
 INSERT INTO SECTION (Sec_no, time, day_of_week, capacity, Room_number, class_name)
 VALUES
@@ -224,9 +224,9 @@ CREATE TABLE JOINS(
     name VARCHAR(255) NOT NULL,
     Sec_no INT NOT NULL,
     PRIMARY KEY (member_email, name, Sec_no),
-    FOREIGN KEY (name) REFERENCES CLASS (name),
-    FOREIGN KEY (Sec_no) REFERENCES SECTION (Sec_no),
-    FOREIGN KEY (member_email) REFERENCES MEMBER (email)
+    FOREIGN KEY (name) REFERENCES CLASS (name) ON DELETE CASCADE,
+    FOREIGN KEY (Sec_no) REFERENCES SECTION (Sec_no) ON DELETE CASCADE,
+    FOREIGN KEY (member_email) REFERENCES MEMBER (email) ON DELETE CASCADE
 );
 
 
@@ -235,8 +235,8 @@ CREATE TABLE CLASSES_OFFERED(
     class_name VARCHAR(255) NOT NULL,
     passcode INT NOT NULL,
     PRIMARY KEY(class_name, passcode),
-    FOREIGN KEY(class_name) REFERENCES CLASS (name),
-    FOREIGN KEY(passcode) REFERENCES GYM(passcode)
+    FOREIGN KEY(class_name) REFERENCES CLASS (name) ON DELETE CASCADE,
+    FOREIGN KEY(passcode) REFERENCES GYM(passcode) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS TEACHES;
@@ -245,29 +245,29 @@ CREATE TABLE TEACHES(
     Sec_no INT NOT NULL,
     class_name VARCHAR(255) NOT NULL,
     PRIMARY KEY (trainer_email, Sec_no, class_name),
-    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email),
-    FOREIGN KEY (Sec_no) REFERENCES SECTION(Sec_no),
-    FOREIGN KEY (class_name) REFERENCES CLASS(name)
+    FOREIGN KEY (trainer_email) REFERENCES TRAINER(email) ON DELETE CASCADE,
+    FOREIGN KEY (Sec_no) REFERENCES SECTION(Sec_no) ON DELETE CASCADE,
+    FOREIGN KEY (class_name) REFERENCES CLASS(name) ON DELETE CASCADE
 );
 INSERT INTO TEACHES (trainer_email, Sec_no, class_name)
 VALUES
 ('test@trainer.com', '01','Zoomba');
 
 ALTER TABLE REPORT
-ADD FOREIGN KEY (manager_email) REFERENCES MANAGER (email);
+ADD FOREIGN KEY (manager_email) REFERENCES MANAGER (email) ON DELETE CASCADE;
 ALTER TABLE NO_REGISTERED
-ADD FOREIGN Key (timestamp) REFERENCES REPORT (timestamp);
+ADD FOREIGN Key (timestamp) REFERENCES REPORT (timestamp) ON DELETE CASCADE;
 
 ALTER TABLE MEMBER
-ADD FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS(membership_name);
+ADD FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS(membership_name) ON DELETE CASCADE;
 ALTER TABLE MEMBER
-ADD FOREIGN Key (gym_id) REFERENCES GYM (passcode);
+ADD FOREIGN Key (gym_id) REFERENCES GYM (passcode) ON DELETE CASCADE;
 
 ALTER TABLE MANAGER
-ADD FOREIGN KEY (gym_id) REFERENCES GYM (passcode);
+ADD FOREIGN KEY (gym_id) REFERENCES GYM (passcode) ON DELETE CASCADE;
 
 ALTER TABLE FRONT_DESK
-ADD FOREIGN KEY (gym_id) REFERENCES GYM (passcode);
+ADD FOREIGN KEY (gym_id) REFERENCES GYM (passcode) ON DELETE CASCADE;
 
 ALTER TABLE TRAINER
-ADD FOREIGN KEY (gym_id) REFERENCES GYM (passcode);
+ADD FOREIGN KEY (gym_id) REFERENCES GYM (passcode) ON DELETE CASCADE;
