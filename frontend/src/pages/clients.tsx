@@ -1,24 +1,27 @@
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
-import FrontDeskDashboard from "../components/dashboard/front-desk/front-desk-dashboard";
-import MemberDashboard from "../components/dashboard/member/member-dashboard";
-import TrainerDashboard from "../components/dashboard/trainer/trainer-dashboard";
+import ClientInfo from "../components/front-desk/client-info";
 
 import Layout from "../components/shared/layout";
-import { SignInRole } from "./sign-in";
 
-interface HomeProps {
+interface ClientProps {
   username: string;
   role: string;
 }
 
-const Home: React.FC<HomeProps> = ({ username, role }: HomeProps) => {
+const Client: React.FC<ClientProps> = ({ username, role }: ClientProps) => {
+  const classes = {
+    containers: "bg-white rounded-lg flex flex-col p-5",
+  };
+  // api to get all clients
   return (
     <Layout>
-      {role === SignInRole.MANAGER && <p> Hello Manager</p>}
-      {role === SignInRole.MEMBER && <MemberDashboard />}
-      {role === SignInRole.FRONT_DESK && <FrontDeskDashboard />}
-      {role === SignInRole.TRAINER && <TrainerDashboard />}
+      <div className="flex flex-col gap-y-5">
+        <div className={classes.containers}>
+          <div className="text-2xl font-bold">All Clients</div>
+        </div>
+        <ClientInfo />
+      </div>
     </Layout>
   );
 };
@@ -46,4 +49,4 @@ const getServerSideProps: GetServerSideProps = async (context) => {
 
 export { getServerSideProps };
 
-export default Home;
+export default Client;
