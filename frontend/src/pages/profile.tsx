@@ -31,7 +31,6 @@ const Settings: React.FC<SettingsProps> = ({
 };
 
 const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log(context);
   const session = await getSession(context);
 
   if (!session?.user?.email) {

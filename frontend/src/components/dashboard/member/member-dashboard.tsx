@@ -1,16 +1,26 @@
 import Link from "next/link";
 import { AiOutlinePlus } from "react-icons/ai";
 
+import { Customer } from "../../../../interfaces/interface";
 import TrainerTable from "./trainer-table";
 
-const MemberDashboard = () => {
+interface MemberDashboardProps {
+  memberDetails: Customer;
+}
+
+const MemberDashboard: React.FC<MemberDashboardProps> = ({
+  memberDetails,
+}: MemberDashboardProps) => {
   const classes = {
     containers: "bg-white rounded-lg flex flex-col p-5",
   };
+
   return (
     <div className="flex flex-col gap-y-5">
       <div className={classes.containers}>
-        <div className="text-2xl font-bold">Welcome Back, Joe</div>
+        <div className="text-2xl font-bold">
+          Welcome Back, {memberDetails.firstName} {memberDetails.lastName}
+        </div>
         <div className="text-sm text-gray-500">Member Dashboard</div>
       </div>
 
@@ -24,7 +34,7 @@ const MemberDashboard = () => {
             </button>
           </Link>
         </div>
-        <TrainerTable />
+        <TrainerTable memberDetails={memberDetails} />
       </div>
     </div>
   );

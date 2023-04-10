@@ -57,7 +57,6 @@ const Schedule: React.FC<ScheduleProps> = ({
 };
 
 const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log(context);
   const session = await getSession(context);
 
   if (!session?.user?.email) {

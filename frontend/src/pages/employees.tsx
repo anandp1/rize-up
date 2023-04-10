@@ -31,7 +31,6 @@ const Employees: React.FC<EmployeesProps> = ({
 };
 
 const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log(context);
   const session = await getSession(context);
 
   if (!session?.user?.email) {

@@ -31,7 +31,6 @@ const Trainer: React.FC<TrainerProps> = ({ username, role }: TrainerProps) => {
 };
 
 const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log(context);
   const session = await getSession(context);
 
   if (!session?.user?.email) {
