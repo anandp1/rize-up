@@ -4,14 +4,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,8 +20,6 @@ import io.github.cdimascio.dotenv.DotenvException;
 import com.rizeup.backend.Database;
 import com.rizeup.backend.model.ClassSection;
 import com.rizeup.backend.model.FrontDesk;
-import com.rizeup.backend.model.Manager;
-import com.rizeup.backend.model.Member;
 import com.rizeup.backend.model.Trainer;
 import com.rizeup.backend.table.ClassTable;
 import com.rizeup.backend.table.FrontDeskTable;
@@ -34,12 +29,11 @@ import com.rizeup.backend.table.TrainerTable;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/frontdesk")
+@RequestMapping("/manager")
 public class ManagerRESTManager {
     public Database database = null;
     private MemberTable memberTable;
     private TrainerTable trainerTable;
-    private ManagerTable managerTable;
     private FrontDeskTable frontDeskTable;
     private ClassTable classTable;
 
@@ -51,7 +45,6 @@ public class ManagerRESTManager {
             Connection dbConnect = database.connect();
 
             this.memberTable = new MemberTable(dbConnect);
-            this.managerTable = new ManagerTable(dbConnect);
             this.frontDeskTable = new FrontDeskTable(dbConnect);
             this.trainerTable = new TrainerTable(dbConnect);
             this.classTable = new ClassTable(dbConnect);
