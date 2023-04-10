@@ -114,7 +114,7 @@ public class ClassTable {
     }
 
     // Update Section of a class
-    public String UpdateSection(String cname, String time, String day, int capacity, int room, int Sec)
+    public String updateSection(String cname, String time, String day, int capacity, int room, int Sec)
             throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "UPDATE SECTION SET Sec_no = ?, time = ?, day_of_week = ?, capacity = ?, Room_number = ?, class_name = ? WHERE Sec_no = ? AND class_name =?")) {

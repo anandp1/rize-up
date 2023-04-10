@@ -342,5 +342,4 @@ public class TrainerTable {
 
         return result;
     }
-
 }

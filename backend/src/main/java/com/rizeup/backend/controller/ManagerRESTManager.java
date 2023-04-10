@@ -2,6 +2,8 @@ package com.rizeup.backend.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +21,12 @@ import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvException;
 
 import com.rizeup.backend.Database;
+import com.rizeup.backend.model.ClassSection;
 import com.rizeup.backend.model.FrontDesk;
 import com.rizeup.backend.model.Manager;
 import com.rizeup.backend.model.Member;
 import com.rizeup.backend.model.Trainer;
+import com.rizeup.backend.table.ClassTable;
 import com.rizeup.backend.table.FrontDeskTable;
 import com.rizeup.backend.table.ManagerTable;
 import com.rizeup.backend.table.MemberTable;
@@ -37,6 +41,7 @@ public class ManagerRESTManager {
     private TrainerTable trainerTable;
     private ManagerTable managerTable;
     private FrontDeskTable frontDeskTable;
+    private ClassTable classTable;
 
     public ManagerRESTManager() {
         try {
@@ -49,6 +54,7 @@ public class ManagerRESTManager {
             this.managerTable = new ManagerTable(dbConnect);
             this.frontDeskTable = new FrontDeskTable(dbConnect);
             this.trainerTable = new TrainerTable(dbConnect);
+            this.classTable = new ClassTable(dbConnect);
 
         } catch (DotenvException e) {
             System.err.println("Could not load .env file in root folder!");
@@ -77,70 +83,93 @@ public class ManagerRESTManager {
         return "Hello Manager!";
     }
 
-    @PostMapping("member/delete")
+    @PostMapping("member/delete/{memberEmail}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteMember(@RequestBody Member member) {
-        // try {
-        // memberTable.deleteMember(member);
-        // } catch (SQLException e) {
-        // throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error
-        // deleting member", e);
-        // }
+    public void deleteMember(@PathVariable String memberEmail) {
+        try {
+            memberTable.removeMember(memberEmail);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "deleteMember - Error deleting member",
+                    e);
+        }
     }
 
-    @PostMapping("member/update")
+    @PostMapping("/member/update/{memberEmail}/{membership}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateMember(@RequestBody Member member) {
-        // try {
-        // memberTable.updateMember(member);
-        // } catch (SQLException e) {
-        // throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error
-        // updating member", e);
-        // }
+    public String updateAccount(@PathVariable String memberEmail, @PathVariable String membership) {
+        try {
+            String response = memberTable.updateMember(memberEmail, membership);
+            if (response.equals("Member updated successfully")) {
+                return "Account Updated";
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "updateAccount - Could not update account");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "updateAccount - Error updating account");
+        }
     }
 
-    @PostMapping("class/delete")
+    @PostMapping("class/delete/{className}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteClass(@RequestBody String classId) {
-        // try {
-        // trainerTable.deleteClass(classId);
-        // } catch (SQLException e) {
-        // throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error
-        // deleting class", e);
-        // }
+    public void deleteClass(@PathVariable String className) {
+        try {
+            classTable.removeClass(className);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "deleteClass - Error deleting class",
+                    e);
+        }
     }
 
-    @GetMapping("class/all")
+    @GetMapping("/class/all/{gymId}")
     @ResponseStatus(HttpStatus.OK)
-    public void getAllClasses() {
-        // try {
-        // return trainerTable.getAllClasses();
-        // } catch (SQLException e) {
-        // throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error
-        // getting all classes", e);
-        // }
+    public ArrayList<ClassSection> getAllClasses(@PathVariable String gymId) {
+        try {
+            int gymIdNum = Integer.parseInt(gymId);
+
+            return classTable.getClassScheduleByGym(gymIdNum);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error getting all classes");
+        }
     }
 
-    @GetMapping("employee/all")
+    @GetMapping("/employee/all/{gymId}")
     @ResponseStatus(HttpStatus.OK)
-    public void getAllEmployees() {
-        // try {
-        // return managerTable.getAllEmployees();
-        // } catch (SQLException e) {
-        // throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error
-        // getting all employees", e);
-        // }
+    public HashMap<String, Object> getAllEmployees(@PathVariable String gymId) {
+        try {
+            int gymIdNum = Integer.parseInt(gymId);
+            ArrayList<Trainer> trainers = trainerTable.getAllTrainers(gymIdNum);
+            ArrayList<FrontDesk> frontDesks = frontDeskTable.getAllFrontDesk(gymIdNum);
+
+            HashMap<String, Object> response = new HashMap<>();
+            response.put("trainers", trainers);
+            response.put("frontDesks", frontDesks);
+
+            return response;
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error getting all employees");
+        }
     }
 
-    @PostMapping("employee/delete")
+    @PostMapping("employee/delete/{employeeEmail}/{employeeType}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteEmployee(@RequestBody String employeeId) {
-        // try {
-        // managerTable.deleteEmployee(employeeId);
-        // } catch (SQLException e) {
-        // throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error
-        // deleting employee", e);
-        // }
+    public void deleteEmployee(@PathVariable String employeeEmail, @PathVariable String employeeType) {
+        try {
+            if (employeeType.equals("trainer")) {
+                trainerTable.removeTrainer(employeeEmail);
+            } else if (employeeType.equals("frontdesk")) {
+                frontDeskTable.removeFrontDesk(employeeEmail);
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "deleteEmployee - Invalid employee type");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "deleteEmployee - Error deleting employee",
+                    e);
+        }
     }
-
 }
