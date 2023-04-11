@@ -26,7 +26,8 @@ const Schedule: React.FC<ScheduleProps> = ({
   };
 
   const router = useRouter();
-  const trainerEmail = router.query.trainerEmail as string;
+  const trainerEmail = decodeURIComponent(router.query.trainerEmail as string);
+  console.log(trainerEmail);
   if (
     (SignInRole.FRONT_DESK === role && !trainerEmail) ||
     SignInRole.MANAGER === role

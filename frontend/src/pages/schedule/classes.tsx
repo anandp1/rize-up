@@ -15,7 +15,6 @@ const Classes: React.FC<ClassesProps> = ({ username, role }: ClassesProps) => {
     containers: "bg-white rounded-lg flex flex-col p-5",
   };
 
-  // pass in class all classes this user is enrolled in
   return (
     <Layout>
       <div className="flex flex-col gap-y-5">

@@ -13,6 +13,22 @@ interface ClassProps {
   memberEmail?: string;
 }
 
+const groupClassesByClassName = (classes: ClassSection[]): ClassSectionsMap => {
+  const result: ClassSectionsMap = {};
+
+  classes.forEach((c) => {
+    const className = c.name;
+
+    if (!result[className]) {
+      result[className] = [];
+    }
+
+    result[className].push(c);
+  });
+
+  return result;
+};
+
 const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
   const classes = {
     container: "bg-white rounded-lg flex flex-col p-5 mx-6",
@@ -34,43 +50,34 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
     error: memberScheduleError,
     mutate: memberScheduleRevalidateData,
   } = useSWR<ClassSection[]>(
-    `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/schedule/${memberEmail}`,
+    usedBy === SignInRole.MEMBER
+      ? `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/schedule/${memberEmail}`
+      : null,
     fetcher
   );
 
   useEffect(() => {
+    if (allClasses && usedBy !== SignInRole.MEMBER) {
+      setAllClassesByClassName(groupClassesByClassName(allClasses));
+      return;
+    }
     if (!allClasses || !memberSchedule) return;
 
     setAllClassesByClassName(
       groupClassesByClassName(removeBySec(allClasses, memberSchedule))
     );
-  }, [allClasses, memberSchedule]);
+  }, [allClasses, memberSchedule, usedBy]);
 
-  if (allClassesError || memberScheduleError) {
+  if (
+    allClassesError ||
+    (!memberScheduleError && usedBy === SignInRole.MEMBER)
+  ) {
     return <div>Failed to load</div>;
   }
 
-  if (!allClasses || !memberSchedule) {
+  if (!allClasses || (!memberSchedule && usedBy === SignInRole.MEMBER)) {
     return <div>Loading...</div>;
   }
-
-  const groupClassesByClassName = (
-    classes: ClassSection[]
-  ): ClassSectionsMap => {
-    const result: ClassSectionsMap = {};
-
-    classes.forEach((c) => {
-      const className = c.name;
-
-      if (!result[className]) {
-        result[className] = [];
-      }
-
-      result[className].push(c);
-    });
-
-    return result;
-  };
 
   const removeBySec = (
     x: ClassSection[],

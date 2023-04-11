@@ -34,7 +34,7 @@ const TrainerProfile: React.FC<TrainerProfileProps> = ({
                   <Link
                     passHref
                     className="ml-auto"
-                    href={`/schedule?trainerEmail=${"testfornow"}`}
+                    href={`/schedule?trainerEmail=${encodeURIComponent(email)}`}
                   >
                     <button className="text-sm bg-orange-500 rounded-md flex flex-row px-4 py-2">
                       <p className="text-white">View Schedule</p>
