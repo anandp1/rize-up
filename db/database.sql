@@ -44,7 +44,10 @@ CREATE TABLE MEMBER (
 
 INSERT INTO MEMBER (email, birth_date, age, gender, password, first_name, middle_name, last_name, date_joined, membership_name, gym_id)
 VALUES
-('test@member.com', '2000-01-01', '23', 'M', 'test', 'Joe', NULL, 'Donald', '2022-01-01', 'Basic', '002');
+('test@member.com', '2000-01-01', '23', 'M', 'test', 'Joeseph', NULL, 'Donald', '2022-01-01', 'Basic', '002');
+INSERT INTO MEMBER (email, birth_date, age, gender, password, first_name, middle_name, last_name, date_joined, membership_name, gym_id)
+VALUES
+('test2@member.com', '2003-04-06', '20', 'F', 'test', 'Holly', NULL, 'Mcmember', '2023-04-04', 'Basic', '002');
 
 DROP TABLE IF EXISTS MANAGER;
 CREATE TABLE MANAGER (
@@ -63,7 +66,7 @@ CREATE TABLE MANAGER (
 
 INSERT INTO MANAGER (email, birth_date, age, gender, password, first_name, middle_name, last_name, gym_id)
 VALUES
-('test@manager.com', '2000-01-01', '23', 'M', 'test', 'Joe', NULL, 'Donald', '002');
+('test@manager.com', '1995-01-01', '28', 'M', 'test', 'John', NULL, 'Dutton', '002');
 
 DROP TABLE IF EXISTS FRONT_DESK;
 CREATE TABLE FRONT_DESK (
@@ -81,7 +84,7 @@ CREATE TABLE FRONT_DESK (
 
 INSERT INTO FRONT_DESK (email, birth_date, age, gender, password, first_name, middle_name, last_name, gym_id)
 VALUES
-('test@frontdesk.com', '2000-01-01', '23', 'M', 'test', 'Joe', NULL, 'Donald', '002');
+('test@frontdesk.com', '2000-01-01', '23', 'F', 'test', 'Suzzy', NULL, 'Sunshine', '002');
 
 DROP TABLE IF EXISTS TRAINER;
 CREATE TABLE TRAINER (
@@ -99,7 +102,7 @@ CREATE TABLE TRAINER (
 
 INSERT INTO TRAINER (email, birth_date, age, gender, password, first_name, middle_name, last_name, gym_id)
 VALUES
-('test@trainer.com', '2000-01-01', '23', 'M', 'test', 'Joe', NULL, 'Donald', '002');
+('test@trainer.com', '2000-01-01', '23', 'M', 'test', 'Jemmy', NULL, 'Trainer', '002');
 
 DROP TABLE IF EXISTS GYM;
 CREATE TABLE GYM (
@@ -125,6 +128,9 @@ CREATE TABLE MEMBERSHIP_PLANS (
 INSERT INTO MEMBERSHIP_PLANS (membership_name, duration, price)
 VALUES
 ('Basic', '2', '14.99');
+INSERT INTO MEMBERSHIP_PLANS (membership_name, duration, price)
+VALUES
+('Premium', '2', '29.99');
 
 DROP TABLE IF EXISTS MEMBERSHIP_PERKS;
 CREATE TABLE MEMBERSHIP_PERKS (
@@ -133,6 +139,15 @@ CREATE TABLE MEMBERSHIP_PERKS (
     PRIMARY KEY (membership_name, perk),
     FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS (membership_name) ON DELETE CASCADE
 );
+INSERT INTO MEMBERSHIP_PERKS (membership_name, perk)
+VALUES
+('Premium', 'Unlimited free classes monthly');
+INSERT INTO MEMBERSHIP_PERKS (membership_name, perk)
+VALUES
+('Premium', '10% off personal training');
+INSERT INTO MEMBERSHIP_PERKS (membership_name, perk)
+VALUES
+('Basic', '1 free class monthly');
 
 DROP TABLE IF EXISTS GYM_PLANS;
 CREATE TABLE GYM_PLANS (
@@ -142,6 +157,12 @@ CREATE TABLE GYM_PLANS (
     FOREIGN KEY (membership_name) REFERENCES MEMBERSHIP_PLANS(membership_name) ON DELETE CASCADE,
     FOREIGN KEY (passcode) REFERENCES GYM (passcode) ON DELETE CASCADE
 );
+INSERT INTO GYM_PLANS (membership_name, passcode)
+VALUES
+('Premium', '002');
+INSERT INTO GYM_PLANS (membership_name, passcode)
+VALUES
+('Basic', '002');
 
 DROP TABLE IF EXISTS MESSAGE;
 CREATE TABLE MESSAGE (
@@ -164,6 +185,9 @@ CREATE TABLE TRAINS (
     FOREIGN KEY (trainer_email) REFERENCES TRAINER(email) ON DELETE CASCADE,
     FOREIGN KEY (member_email) REFERENCES MEMBER(email) ON DELETE CASCADE
 );
+INSERT INTO TRAINS (member_email, trainer_email)
+VALUES
+('test2@member.com', 'test@trainer.com');
 
 DROP TABLE IF EXISTS PROFILE;
 CREATE TABLE PROFILE(
@@ -172,6 +196,8 @@ CREATE TABLE PROFILE(
     PRIMARY KEY (trainer_email),
     FOREIGN KEY (trainer_email) REFERENCES TRAINER(email) ON DELETE CASCADE
 );
+INSERT INTO PROFILE (trainer_email, about_me)
+VALUES ('test@trainer.com', 'Just started at Rize Up and am xcited to start working with some new clients!');
 
 DROP TABLE IF EXISTS TRAINER_INTERESTS;
 CREATE TABLE TRAINER_INTERESTS (
@@ -180,6 +206,12 @@ CREATE TABLE TRAINER_INTERESTS (
     PRIMARY KEY (interest, trainer_email),
     FOREIGN KEY (trainer_email) REFERENCES TRAINER(email) ON DELETE CASCADE
 );
+INSERT INTO TRAINER_INTERESTS (trainer_email, interest)
+VALUES
+('test@trainer.com', 'Hiking');
+INSERT INTO TRAINER_INTERESTS (trainer_email, interest)
+VALUES
+('test@trainer.com', 'Crossfit');
 
 DROP TABLE IF EXISTS TRAINER_EXPERIENCE;
 CREATE TABLE TRAINER_EXPERIENCE(
@@ -190,6 +222,9 @@ CREATE TABLE TRAINER_EXPERIENCE(
     PRIMARY KEY (description, trainer_email),
     FOREIGN KEY (trainer_email) REFERENCES TRAINER (email) ON DELETE CASCADE
 );
+INSERT INTO TRAINER_EXPERIENCE (trainer_email, description, years_of_experience, education)
+VALUES
+('test@trainer.com', 'Study of muscle development', '6', 'Bachlor of Kinesiology');
 
 DROP TABLE IF EXISTS CLASS;
 CREATE TABLE CLASS(
@@ -201,6 +236,9 @@ CREATE TABLE CLASS(
 INSERT INTO CLASS (name, length, cost)
 VALUES
 ('Zoomba', '90', '19.99');
+INSERT INTO CLASS (name, length, cost)
+VALUES
+('Spin', '60', '15.99');
 
 DROP TABLE IF EXISTS SECTION;
 CREATE TABLE SECTION(
@@ -216,7 +254,15 @@ CREATE TABLE SECTION(
 INSERT INTO SECTION (Sec_no, time, day_of_week, capacity, Room_number, class_name)
 VALUES
 ('01', '08:30 AM','1', '30', '03', 'Zoomba');
-
+INSERT INTO SECTION (Sec_no, time, day_of_week, capacity, Room_number, class_name)
+VALUES
+('02', '08:30 AM','3', '30', '03', 'Zoomba');
+INSERT INTO SECTION (Sec_no, time, day_of_week, capacity, Room_number, class_name)
+VALUES
+('01', '04:30 PM','2', '15', '01', 'Spin');
+INSERT INTO SECTION (Sec_no, time, day_of_week, capacity, Room_number, class_name)
+VALUES
+('02', '04:30 PM','4', '15', '01', 'Spin');
 
 DROP TABLE IF EXISTS JOINS;
 CREATE TABLE JOINS(
@@ -228,7 +274,12 @@ CREATE TABLE JOINS(
     FOREIGN KEY (Sec_no) REFERENCES SECTION (Sec_no) ON DELETE CASCADE,
     FOREIGN KEY (member_email) REFERENCES MEMBER (email) ON DELETE CASCADE
 );
-
+INSERT INTO JOINS (Sec_no, name, member_email)
+VALUES
+('01', 'Spin', 'test2@member.com');
+INSERT INTO JOINS (Sec_no, name, member_email)
+VALUES
+('02', 'Zoomba', 'test@member.com');
 
 DROP TABLE IF EXISTS CLASSES_OFFERED;
 CREATE TABLE CLASSES_OFFERED(
@@ -238,6 +289,12 @@ CREATE TABLE CLASSES_OFFERED(
     FOREIGN KEY(class_name) REFERENCES CLASS (name) ON DELETE CASCADE,
     FOREIGN KEY(passcode) REFERENCES GYM(passcode) ON DELETE CASCADE
 );
+INSERT INTO CLASSES_OFFERED (class_name, passcode)
+VALUES
+('Zoomba', '002');
+INSERT INTO CLASSES_OFFERED (class_name, passcode)
+VALUES
+('Spin', '002');
 
 DROP TABLE IF EXISTS TEACHES;
 CREATE TABLE TEACHES(
@@ -252,6 +309,16 @@ CREATE TABLE TEACHES(
 INSERT INTO TEACHES (trainer_email, Sec_no, class_name)
 VALUES
 ('test@trainer.com', '01','Zoomba');
+INSERT INTO TEACHES (trainer_email, Sec_no, class_name)
+VALUES
+('test@trainer.com', '02','Zoomba');
+INSERT INTO TEACHES (trainer_email, Sec_no, class_name)
+VALUES
+('test@trainer.com', '01','Spin');
+INSERT INTO TEACHES (trainer_email, Sec_no, class_name)
+VALUES
+('test@trainer.com', '02','Spin');
+
 
 ALTER TABLE REPORT
 ADD FOREIGN KEY (manager_email) REFERENCES MANAGER (email) ON DELETE CASCADE;
