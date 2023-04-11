@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { BsChatDots } from "react-icons/bs";
 import useSWR from "swr";
 import axios from "axios";
@@ -160,37 +160,35 @@ const ClientTable: React.FC<ClientTableProps> = ({
           </div>
           <div className="flex-1 px-4 py-2"></div>
         </div>
-        <div className="flex flex-row border">
-          {data.map((member: Customer) => (
-            <Fragment key={member.email}>
-              <div className="flex-1 px-4 py-2 flex items-center truncate">
-                <span>
-                  {member.firstName} {member.lastName}
-                </span>
-              </div>
-              <div className="flex-1 px-4 py-2 flex items-center truncate">
-                {member.email}
-              </div>
-              <div className="flex-1 px-4 py-2 flex items-center">
-                {member.age}
-              </div>
-              <div className="flex-1 px-4 py-2 flex items-center">
-                {member.gender}
-              </div>
+        {data.map((member: Customer) => (
+          <div key={member.email} className="flex flex-row border">
+            <div className="flex-1 px-4 py-2 flex items-center truncate">
+              <span>
+                {member.firstName} {member.lastName}
+              </span>
+            </div>
+            <div className="flex-1 px-4 py-2 flex items-center truncate">
+              {member.email}
+            </div>
+            <div className="flex-1 px-4 py-2 flex items-center">
+              {member.age}
+            </div>
+            <div className="flex-1 px-4 py-2 flex items-center">
+              {member.gender}
+            </div>
 
-              <div className="flex-1 px-4 py-2 flex items-center justify-end">
-                <div className="flex">
-                  <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm mr-2">
-                    <BsChatDots
-                      onClick={async () => await openChatClicked(member)}
-                      className="absolute top-1.5 left-1.5"
-                    />
-                  </button>
-                </div>
+            <div className="flex-1 px-4 py-2 flex items-center justify-end">
+              <div className="flex">
+                <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm mr-2">
+                  <BsChatDots
+                    onClick={async () => await openChatClicked(member)}
+                    className="absolute top-1.5 left-1.5"
+                  />
+                </button>
               </div>
-            </Fragment>
-          ))}
-        </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

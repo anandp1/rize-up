@@ -193,7 +193,6 @@ public class MemberRESTManager {
 
             return response;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting all classes");
         }
@@ -224,7 +223,13 @@ public class MemberRESTManager {
     @ResponseStatus(HttpStatus.OK)
     public ArrayList<ClassSection> getSchedule(@PathVariable String memberEmail) {
         try {
-            return memberTable.getClassesByMember(memberEmail);
+            ArrayList<ClassSection> response = memberTable.getClassesByMember(memberEmail);
+
+            if (response == null) {
+                return new ArrayList<ClassSection>();
+            }
+
+            return response;
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting trainer schedule");

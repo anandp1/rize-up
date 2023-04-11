@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { BsChatDots } from "react-icons/bs";
 import { MdOutlineCancel } from "react-icons/md";
 import useSWR from "swr";
@@ -175,44 +175,42 @@ const TrainerTable: React.FC<TrainerTableProps> = ({
 
           <div className="flex-1 px-4 py-2"></div>
         </div>
-        <div className="flex flex-row border">
-          {data.map((trainer) => (
-            <Fragment key={trainer.email}>
-              <div className="flex-1 px-4 py-2 flex items-center truncate">
-                <span>
-                  {trainer.firstName} {trainer.lastName}
-                </span>
+        {data.map((trainer) => (
+          <div key={trainer.email} className="flex flex-row border">
+            <div className="flex-1 px-4 py-2 flex items-center truncate">
+              <span>
+                {trainer.firstName} {trainer.lastName}
+              </span>
+            </div>
+            <div className="flex-1 px-4 py-2 flex items-center">
+              {trainer.age}
+            </div>
+            <div className="flex-1 px-4 py-2 flex items-center truncate">
+              {trainer.gender}
+            </div>
+            <div className="flex-1 px-4 py-2 flex items-center truncate">
+              {trainer.email}
+            </div>
+            <div className="flex-1 px-4 py-2 flex items-center justify-end">
+              <div className="flex">
+                <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm mr-2">
+                  <BsChatDots
+                    onClick={async () => await openChatClicked(trainer)}
+                    className="absolute top-1.5 left-1.5"
+                  />
+                </button>
+                <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm">
+                  <MdOutlineCancel
+                    onClick={async () =>
+                      await removeTrainerClicked(trainer.email)
+                    }
+                    className="absolute top-1.5 left-1.5"
+                  />
+                </button>
               </div>
-              <div className="flex-1 px-4 py-2 flex items-center">
-                {trainer.age}
-              </div>
-              <div className="flex-1 px-4 py-2 flex items-center truncate">
-                {trainer.gender}
-              </div>
-              <div className="flex-1 px-4 py-2 flex items-center truncate">
-                {trainer.email}
-              </div>
-              <div className="flex-1 px-4 py-2 flex items-center justify-end">
-                <div className="flex">
-                  <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm mr-2">
-                    <BsChatDots
-                      onClick={async () => await openChatClicked(trainer)}
-                      className="absolute top-1.5 left-1.5"
-                    />
-                  </button>
-                  <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm">
-                    <MdOutlineCancel
-                      onClick={async () =>
-                        await removeTrainerClicked(trainer.email)
-                      }
-                      className="absolute top-1.5 left-1.5"
-                    />
-                  </button>
-                </div>
-              </div>
-            </Fragment>
-          ))}
-        </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

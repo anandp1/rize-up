@@ -30,6 +30,11 @@ const groupClassesByClassName = (classes: ClassSection[]): ClassSectionsMap => {
   return result;
 };
 
+const removeBySec = (x: ClassSection[], y: ClassSection[]): ClassSection[] => {
+  const ySecs = new Set(y.map((cs) => cs.sec));
+  return x.filter((cs) => !ySecs.has(cs.sec));
+};
+
 const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
   const classes = {
     container: "bg-white rounded-lg flex flex-col p-5 mx-6",
@@ -75,7 +80,7 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
 
   if (
     allClassesError ||
-    (!memberScheduleError && usedBy === SignInRole.MEMBER)
+    (memberScheduleError && usedBy === SignInRole.MEMBER)
   ) {
     return <div>Failed to load</div>;
   }
@@ -83,14 +88,6 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
   if (!allClasses || (!memberSchedule && usedBy === SignInRole.MEMBER)) {
     return <div>Loading...</div>;
   }
-
-  const removeBySec = (
-    x: ClassSection[],
-    y: ClassSection[]
-  ): ClassSection[] => {
-    const ySecs = new Set(y.map((cs) => cs.sec));
-    return x.filter((cs) => !ySecs.has(cs.sec));
-  };
 
   const removeClass = async (className: string) => {
     try {

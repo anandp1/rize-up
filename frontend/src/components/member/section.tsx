@@ -31,6 +31,7 @@ const Section: React.FC<SectionProps> = ({
   };
 
   const addClass = async (className: string, sectionId: number) => {
+    if (usedBy !== SignInRole.MEMBER) return;
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/class/add/${className}/${memberEmail}/${sectionId}`
@@ -52,11 +53,6 @@ const Section: React.FC<SectionProps> = ({
           className={classNames(classes.container, "mx-10")}
         >
           <Disclosure.Panel>
-            {usedBy === SignInRole.MEMBER && (
-              <span className="hidden group-hover:block absolute right-1/2 top-1/2">
-                <AiOutlinePlusCircle className="text-black w-6 h-6" />
-              </span>
-            )}
             <div>
               <p className={classes.headerText}>Section {section.sec}</p>
               <p className={classes.descriptionText}>

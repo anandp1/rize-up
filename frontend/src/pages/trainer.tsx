@@ -63,7 +63,7 @@ const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       username: session.user.email,
       role: session.user.name,
-      trainerDetails: response?.data,
+      trainerDetails: response?.data ?? {},
     },
   };
 };
