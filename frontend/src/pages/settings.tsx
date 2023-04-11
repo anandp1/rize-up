@@ -74,7 +74,7 @@ const Settings: React.FC<SettingsProps> = ({
             <input
               className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
               type="email"
-              value={memberInfo.email}
+              value={email ?? memberInfo.email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Listbox

@@ -53,3 +53,21 @@ interface TrainerExperience {
 export interface TrainersInformationMap {
   [email: string]: TrainerInformation;
 }
+
+export interface ClassSection {
+  name: string;
+  length: number;
+  cost: number;
+  sec: number;
+  time: string;
+  day: number;
+  capacity: number;
+  room: number;
+  tFname: string;
+  tLname: string;
+  joined: number;
+}
+
+export interface ClassSectionsMap {
+  [day: string]: ClassSection[];
+}
