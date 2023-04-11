@@ -52,10 +52,10 @@ public class ClassTable {
         return null; // return null if section not found
     }
 
-    // view schedule for all classes and sections
+    // view schedule for all classes and sections for a specific gym
     public ArrayList<ClassSection> getClassScheduleByGym(int gymId) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT C.name, S.Sec_no, S.time, S.day_of_week, S.Room_number, T.first_name, T.last_name FROM CLASS AS C, SECTION AS S, CLASSES_OFFERED AS O, TRAINS AS X, TRAINER AS T WHERE S.class_name = C.name AND O.class_name = C.name AND O.passcode = ? AND X.Sec_no = S.Sec_no AND C.name = X.class_name AND T.email = X.trainer_email")) {
+                "SELECT C.*, S.*, T.first_name, T.last_name FROM CLASS AS C, SECTION AS S, CLASSES_OFFERED AS O, TEACHES AS X, TRAINER AS T WHERE S.class_name = C.name AND O.class_name = C.name AND O.passcode = ? AND X.Sec_no = S.Sec_no AND C.name = X.class_name AND T.email = X.trainer_email")) {
             statement.setInt(1, gymId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -63,8 +63,31 @@ public class ClassTable {
                     do {
                         // String name, int sec, String time, int day, int room, String Fname, String
                         // Lname
-                        result.add(new ClassSection(resultSet.getString("C.name"), resultSet.getInt("C.Sec_no"),
-                                resultSet.getString("s.time"), resultSet.getInt("S.day_of_week"),
+                        result.add(new ClassSection(resultSet.getString("C.name"), resultSet.getInt("C.length"), 
+                            resultSet.getFloat("C.cost"), resultSet.getInt("S.Sec_no"),
+                            resultSet.getString("S.time"), resultSet.getInt("S.day_of_week"), resultSet.getInt("S.capacity"),
+                            resultSet.getInt("S.Room_number"), resultSet.getString("T.first_name"),
+                            resultSet.getString("T.last_name")));
+                    } while (resultSet.next());
+                    return result;
+                }
+            }
+        }
+        return null; // return null if no classes found for given gymId
+    }
+    // view schedule for all classes and sections
+    public ArrayList<ClassSection> getClassScheduleAll() throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT C.*, S.*, T.first_name, T.last_name FROM CLASS AS C, SECTION AS S, TEACHES AS X, TRAINER AS T WHERE S.class_name = C.name AND X.Sec_no = S.Sec_no AND C.name = X.class_name AND T.email = X.trainer_email")) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    ArrayList<ClassSection> result = new ArrayList<ClassSection>();
+                    do {
+                        // String name, int sec, String time, int day, int room, String Fname, String
+                        // Lname
+                        result.add(new ClassSection(resultSet.getString("C.name"), resultSet.getInt("C.length"), 
+                                resultSet.getFloat("C.cost"), resultSet.getInt("S.Sec_no"),
+                                resultSet.getString("S.time"), resultSet.getInt("S.day_of_week"), resultSet.getInt("S.capacity"),
                                 resultSet.getInt("S.Room_number"), resultSet.getString("T.first_name"),
                                 resultSet.getString("T.last_name")));
                     } while (resultSet.next());
@@ -72,7 +95,7 @@ public class ClassTable {
                 }
             }
         }
-        return null; // return null if no classes found for given gymId
+        return null; // return null if no classes found
     }
 
     // Add member to a class
