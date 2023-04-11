@@ -1,24 +1,57 @@
 import { useState } from "react";
 import { Listbox } from "@headlessui/react";
+import useSWR from "swr";
+import axios from "axios";
 
 import Model from "../model/model";
+import { Customer } from "../../../interfaces/interface";
+import { fetcher } from "../../../utils/fetcher";
 
 const ClientInfo = () => {
-  const deleteAccount = () => {
-    // api to delete account
-  };
-
-  const memberships = ["Regular", "Premium", "Gold"];
+  const memberships = ["Basic", "Premium", "Gold"];
 
   const [updateInfoModel, setUpdateInfoModel] = useState(false);
   const [selectedMembership, setSelectedMembership] = useState(memberships[0]);
-  const [email, setEmail] = useState("johndoe@mail.com");
+  const [email, setEmail] = useState("");
+  const [selectedClient, setSelectedClient] = useState<Customer>();
 
-  const updateInformation = () => {
-    // API to update information
+  const {
+    data: clientInfo,
+    error,
+    mutate: revalidateData,
+  } = useSWR<Customer[]>(
+    `${process.env.NEXT_PUBLIC_RIZE_API_URL}/frontdesk/members/all`,
+    fetcher
+  );
+
+  if (error) return <div>Failed to load</div>;
+  if (!clientInfo) return <div>Loading...</div>;
+
+  const updateInformation = async () => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/account/update/${email}/${selectedMembership}`
+      );
+
+      alert("Updated information successfully");
+      revalidateData();
+    } catch {
+      alert("Error updating information");
+    }
     setUpdateInfoModel(false);
   };
 
+  const deleteAccount = async (email: string) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/account/delete/${email}`
+      );
+
+      alert(response.data.message);
+    } catch {
+      console.log("Error deleting account");
+    }
+  };
   return (
     <div className="flex">
       {updateInfoModel && (
@@ -28,7 +61,7 @@ const ClientInfo = () => {
             <input
               className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
               type="email"
-              value={email}
+              value={email ?? selectedClient?.email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Listbox
@@ -83,46 +116,56 @@ const ClientInfo = () => {
           </div>
         </Model>
       )}
-      <div className="bg-white rounded-lg flex flex-col px-6 pt-8 pb-4 max-w-lg mx-auto">
-        <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-          <div className="flex flex-col">
-            <p className="text-lg font-semibold mb-1">Name</p>
-            <p className="text-gray-700">Joe Doe</p>
+      {clientInfo.map((client) => (
+        <div
+          key={client.email}
+          className="bg-white rounded-lg flex flex-col px-6 pt-8 pb-4 max-w-lg mx-auto max-h-screen overflow-y-auto"
+        >
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+            <div className="flex flex-col">
+              <p className="text-lg font-semibold mb-1">Name</p>
+              <p className="text-gray-700">
+                {client.firstName} {client.lastName}
+              </p>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-lg font-semibold mb-1">Date of Birth</p>
+              <p className="text-gray-700">{client.birthDate}</p>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-lg font-semibold mb-1">Age</p>
+              <p className="text-gray-700">{client.age}</p>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-lg font-semibold mb-1">Gender</p>
+              <p className="text-gray-700">{client.gender}</p>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-lg font-semibold mb-1">Date Joined</p>
+              <p className="text-gray-700">{client.dateJoined}</p>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-lg font-semibold mb-1">Membership Type</p>
+              <p className="text-gray-700">{client.membershipName}</p>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <p className="text-lg font-semibold mb-1">Date of Birth</p>
-            <p className="text-gray-700">2001/01/01</p>
-          </div>
-          <div className="flex flex-col">
-            <p className="text-lg font-semibold mb-1">Age</p>
-            <p className="text-gray-700">13</p>
-          </div>
-          <div className="flex flex-col">
-            <p className="text-lg font-semibold mb-1">Gender</p>
-            <p className="text-gray-700">M</p>
-          </div>
-          <div className="flex flex-col">
-            <p className="text-lg font-semibold mb-1">Date Joined</p>
-            <p className="text-gray-700">2022/01/01</p>
-          </div>
-          <div className="flex flex-col">
-            <p className="text-lg font-semibold mb-1">Membership Type</p>
-            <p className="text-gray-700">Regular Membership</p>
-          </div>
+          <button
+            onClick={async () => await deleteAccount(client.email)}
+            className="px-4 py-2 bg-red-500 text-white rounded-md mt-3 mb-1"
+          >
+            Delete Account
+          </button>
+          <button
+            onClick={() => {
+              setUpdateInfoModel(true);
+              setSelectedClient(client);
+            }}
+            className="px-4 py-2 bg-slate-200 rounded-md border border-slate-100"
+          >
+            Update Information
+          </button>
         </div>
-        <button
-          onClick={deleteAccount}
-          className="px-4 py-2 bg-red-500 text-white rounded-md mt-3 mb-1"
-        >
-          Delete Account
-        </button>
-        <button
-          onClick={() => setUpdateInfoModel(true)}
-          className="px-4 py-2 bg-slate-200 rounded-md border border-slate-100"
-        >
-          Update Information
-        </button>
-      </div>
+      ))}
     </div>
   );
 };
