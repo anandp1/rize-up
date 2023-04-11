@@ -86,3 +86,20 @@ export interface Membership {
   price: number;
   perks: string[];
 }
+
+export interface FrontDesk {
+  email: string;
+  birthDate: string;
+  age: number;
+  gender: string;
+  password?: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  gymId: number;
+}
+
+export interface EmployeeDetailsMap {
+  trainer: Trainer[];
+  frontDesk: FrontDesk[];
+}

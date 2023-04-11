@@ -2,8 +2,9 @@ import { Disclosure, Transition } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { AiOutlineUp } from "react-icons/ai";
 import useSWR from "swr";
-import { ClassSection, ClassSectionsMap } from "../../../interfaces/interface";
+import axios from "axios";
 
+import { ClassSection, ClassSectionsMap } from "../../../interfaces/interface";
 import { fetcher } from "../../../utils/fetcher";
 import { SignInRole } from "../../pages/sign-in";
 import Section from "./section";
@@ -40,7 +41,11 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
   const [allClassesByClassName, setAllClassesByClassName] =
     useState<ClassSectionsMap>({});
 
-  const { data: allClasses, error: allClassesError } = useSWR<ClassSection[]>(
+  const {
+    data: allClasses,
+    error: allClassesError,
+    mutate: allClassesRevalidateData,
+  } = useSWR<ClassSection[]>(
     `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/class/all/${process.env.NEXT_PUBLIC_GYM_ID}`,
     fetcher
   );
@@ -87,11 +92,18 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
     return x.filter((cs) => !ySecs.has(cs.sec));
   };
 
-  const removeClass = () => {
-    // api to remove class
+  const removeClass = async (className: string) => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/manager/class/delete/${className}`
+      );
+
+      allClassesRevalidateData();
+    } catch {
+      alert("Failed to remove class");
+    }
   };
 
-  // api to get all classes but then exclude the ones that the user is already in (this should be passed as a prop)
   return (
     <>
       {Object.keys(allClassesByClassName).map((className) => (
@@ -113,7 +125,7 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
                 </Disclosure.Button>
                 {SignInRole.MANAGER === usedBy && (
                   <button
-                    onClick={removeClass}
+                    onClick={async () => await removeClass(className)}
                     className="px-4 py-2 bg-red-500 text-white rounded-md mt-3 mb-1 ml-auto w-1/3"
                   >
                     Remove Class
