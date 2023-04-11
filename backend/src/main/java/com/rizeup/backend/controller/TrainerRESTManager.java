@@ -49,7 +49,7 @@ public class TrainerRESTManager {
 
             this.memberTable = new MemberTable(dbConnect);
             this.trainerTable = new TrainerTable(dbConnect);
-            this.trainerTable = new TrainerTable(dbConnect);
+            this.trainsTable = new TrainsTable(dbConnect);
             this.messageTable = new MessageTable(dbConnect);
             this.classTable = new ClassTable(dbConnect);
 
@@ -89,6 +89,7 @@ public class TrainerRESTManager {
 
             return members;
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting all members assigned to trainer");
         }
@@ -129,7 +130,13 @@ public class TrainerRESTManager {
     @ResponseStatus(HttpStatus.OK)
     public ArrayList<ClassSection> getSchedule(@PathVariable String trainerEmail) {
         try {
-            return trainerTable.getClassesByTrainer(trainerEmail);
+            ArrayList<ClassSection> response = trainerTable.getClassesByTrainer(trainerEmail);
+
+            if (response == null) {
+                return new ArrayList<ClassSection>();
+            }
+
+            return response;
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting trainer schedule");
@@ -154,6 +161,7 @@ public class TrainerRESTManager {
             int sectionNumberInt = Integer.parseInt(sectionNumber);
             return classTable.getSectionList(className, sectionNumberInt);
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "getClassList - Error getting class list");
         }

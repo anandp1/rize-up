@@ -12,7 +12,7 @@ public class FrontDeskTable {
         this.connection = database;
     }
 
-    //verify Front desk staff for login
+    // verify Front desk staff for login
     public FrontDesk getFrontDesk(String email, String password) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM FRONT_DESK WHERE email = ? AND password = ?")) {
@@ -32,7 +32,7 @@ public class FrontDeskTable {
 
     public ArrayList<FrontDesk> getAllFrontDesk(int gymId) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM TRAINER WHERE gym_id = ? ")) {
+                "SELECT * FROM FRONT_DESK WHERE gym_id = ? ")) {
             statement.setInt(1, gymId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {

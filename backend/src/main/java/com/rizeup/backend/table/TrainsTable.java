@@ -16,11 +16,12 @@ public class TrainsTable {
                 "INSERT INTO TRAINS(trainer_email, member_email) VALUES (?,?)")) {
             statement.setString(1, temail);
             statement.setString(2, memail);
+
             if (statement.executeUpdate() > 0) {
                 return "Trainer added to member successfully";
             }
         }
-        return "Could not add member to trainer roster";
+        return "Could not add trainer to member roster";
     }
 
     // remove trainer from member
@@ -39,7 +40,8 @@ public class TrainsTable {
     // get all members that trainer trains
     public ArrayList<String> getTrainerClients(String temail) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT member_email FROM TRAINS WHERE trainer_email =? ")) {
+                "SELECT member_email FROM TRAINS WHERE trainer_email = ?")) {
+            statement.setString(1, temail);
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 if (resultSet.next()) {

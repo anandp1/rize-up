@@ -14,7 +14,8 @@ public class MemberTable {
     public MemberTable(Connection database) {
         this.connection = database;
     }
-    //get all members
+
+    // get all members
     public List<Member> getAllMembers() throws SQLException {
         List<Member> members = new ArrayList<>();
 
@@ -31,7 +32,8 @@ public class MemberTable {
         }
         return members;
     }
-    //verify member for login
+
+    // verify member for login
     public Member getMember(String email, String password) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM MEMBER WHERE email = ? AND password = ?")) {
@@ -53,19 +55,19 @@ public class MemberTable {
     // find all classes and sections member is registered for
     public ArrayList<ClassSection> getClassesByMember(String Memail) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT C.*, S.* FROM CLASS AS C, SECTION AS S, JOINS AS T WHERE S.class_name = C.name AND T.Sec_no = S.Sec_no AND T.class_name = C.name AND T.member_email = ?")) {
+                "SELECT C.*, S.* FROM CLASS AS C, SECTION AS S, JOINS AS T WHERE S.class_name = C.name AND T.Sec_no = S.Sec_no AND T.name = C.name AND T.member_email = ?")) {
             statement.setString(1, Memail);
             try (ResultSet resultSet = statement.executeQuery()) {
 
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     ArrayList<ClassSection> result = new ArrayList<ClassSection>();
                     do {
                         // String name, int length, float cost, int sec, String time, int day, int
                         // capacity, int room, String Fname, String Lname
-                        result.add(new ClassSection(resultSet.getString("C.name"), resultSet.getInt("S.length"),
-                                resultSet.getFloat("C.cost"), resultSet.getInt("C.Sec_no"),
-                                resultSet.getString("s.time"), resultSet.getInt("S.day_of_week"),
-                                resultSet.getInt("C.capacity"), resultSet.getInt("S.Room_number"), null, null));
+                        result.add(new ClassSection(resultSet.getString("C.name"), resultSet.getInt("C.length"),
+                                resultSet.getFloat("C.cost"), resultSet.getInt("S.Sec_no"),
+                                resultSet.getString("S.time"), resultSet.getInt("S.day_of_week"),
+                                resultSet.getInt("S.capacity"), resultSet.getInt("S.Room_number"), null, null));
                     } while (resultSet.next());
                     return result;
                 }
@@ -144,6 +146,7 @@ public class MemberTable {
                 return "Member updated successfully";
             }
         }
+
         return "Could not update member"; // return null if no member found with the given email and password
     }
 

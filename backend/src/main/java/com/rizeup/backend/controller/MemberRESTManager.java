@@ -100,7 +100,13 @@ public class MemberRESTManager {
     @ResponseStatus(HttpStatus.OK)
     public List<Message> getChatHistory(@PathVariable String trainerEmail, @PathVariable String memberEmail) {
         try {
-            return messageTable.getMessages(trainerEmail, memberEmail);
+            List<Message> response = messageTable.getMessages(trainerEmail, memberEmail);
+
+            if (response == null) {
+                return new ArrayList<Message>();
+            }
+
+            return response;
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting chat history");
@@ -167,6 +173,7 @@ public class MemberRESTManager {
                         "addTrainer - Could not add trainer");
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error adding trainer");
         }
@@ -178,8 +185,15 @@ public class MemberRESTManager {
         try {
             int gymIdNum = Integer.parseInt(gymId);
 
-            return classTable.getClassScheduleByGym(gymIdNum);
+            ArrayList<ClassSection> response = classTable.getClassScheduleByGym(gymIdNum);
+
+            if (response == null) {
+                return new ArrayList<ClassSection>();
+            }
+
+            return response;
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting all classes");
         }
