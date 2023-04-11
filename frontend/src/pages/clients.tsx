@@ -27,7 +27,6 @@ const Client: React.FC<ClientProps> = ({ username, role }: ClientProps) => {
 };
 
 const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log(context);
   const session = await getSession(context);
 
   if (!session?.user?.email) {

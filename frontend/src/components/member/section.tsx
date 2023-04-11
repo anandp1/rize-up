@@ -1,13 +1,26 @@
 import classNames from "classnames";
 import { Disclosure } from "@headlessui/react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import axios from "axios";
+
 import { SignInRole } from "../../pages/sign-in";
+import { ClassSection } from "../../../interfaces/interface";
+import { daysMap, getEndTime } from "../../../utils/helper";
+import { KeyedMutator } from "swr";
 
 interface SectionProps {
   usedBy?: SignInRole;
+  sections: ClassSection[];
+  memberEmail?: string;
+  memberScheduleRevalidateData?: KeyedMutator<ClassSection[]>;
 }
 
-const Section: React.FC<SectionProps> = ({ usedBy }: SectionProps) => {
+const Section: React.FC<SectionProps> = ({
+  usedBy,
+  sections,
+  memberScheduleRevalidateData,
+  memberEmail,
+}: SectionProps) => {
   const classes = {
     container:
       usedBy === SignInRole.MEMBER
@@ -17,26 +30,44 @@ const Section: React.FC<SectionProps> = ({ usedBy }: SectionProps) => {
     descriptionText: "text-sm text-gray-500 font-bold",
   };
 
-  const addClass = () => {
-    // API to add class for user
+  const addClass = async (className: string, sectionId: number) => {
+    if (usedBy !== SignInRole.MEMBER) return;
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/class/add/${className}/${memberEmail}/${sectionId}`
+      );
+
+      memberScheduleRevalidateData?.();
+      alert("Class added successfully");
+    } catch {
+      alert("Failed to add class");
+    }
   };
 
   return (
-    <div onClick={addClass} className={classNames(classes.container, "mx-10")}>
-      <Disclosure.Panel>
-        {usedBy === SignInRole.MEMBER && (
-          <span className="hidden group-hover:block absolute right-1/2 top-1/2">
-            <AiOutlinePlusCircle className="text-black w-6 h-6" />
-          </span>
-        )}
-        <div>
-          <p className={classes.headerText}>Section 1</p>
-          <p className={classes.descriptionText}>Monday, 8:00PM-9:00PM</p>
-          <p className={classes.descriptionText}>Section 11, Room 10</p>
-          <p className={classes.descriptionText}>10 / 11</p>
+    <>
+      {sections.map((section) => (
+        <div
+          key={section.sec}
+          onClick={async () => await addClass(section.name, section.sec)}
+          className={classNames(classes.container, "mx-10")}
+        >
+          <Disclosure.Panel>
+            <div>
+              <p className={classes.headerText}>Section {section.sec}</p>
+              <p className={classes.descriptionText}>
+                {daysMap[section.day]}, {section.time} to{" "}
+                {getEndTime(section.time, section.length)}
+              </p>
+              <p className={classes.descriptionText}>
+                {section.trainer}, Room {section.room}
+              </p>
+              <p className={classes.descriptionText}>Max {section.capacity}</p>
+            </div>
+          </Disclosure.Panel>
         </div>
-      </Disclosure.Panel>
-    </div>
+      ))}
+    </>
   );
 };
 

@@ -21,10 +21,10 @@ public class ClassTable {
             statement.setInt(1, Sec_no);
             statement.setString(2, Cname);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     ArrayList<String> result = new ArrayList<String>();
                     do {
-                        result.add(resultSet.getString("M.fisrt_name") + " " + resultSet.getString("M.last_name"));
+                        result.add(resultSet.getString("M.first_name") + " " + resultSet.getString("M.last_name"));
                     } while (resultSet.next());
                     return result;
                 }
@@ -63,11 +63,12 @@ public class ClassTable {
                     do {
                         // String name, int sec, String time, int day, int room, String Fname, String
                         // Lname
-                        result.add(new ClassSection(resultSet.getString("C.name"), resultSet.getInt("C.length"), 
-                            resultSet.getFloat("C.cost"), resultSet.getInt("S.Sec_no"),
-                            resultSet.getString("S.time"), resultSet.getInt("S.day_of_week"), resultSet.getInt("S.capacity"),
-                            resultSet.getInt("S.Room_number"), resultSet.getString("T.first_name"),
-                            resultSet.getString("T.last_name")));
+                        result.add(new ClassSection(resultSet.getString("C.name"), resultSet.getInt("C.length"),
+                                resultSet.getFloat("C.cost"), resultSet.getInt("S.Sec_no"),
+                                resultSet.getString("S.time"), resultSet.getInt("S.day_of_week"),
+                                resultSet.getInt("S.capacity"),
+                                resultSet.getInt("S.Room_number"), resultSet.getString("T.first_name"),
+                                resultSet.getString("T.last_name")));
                     } while (resultSet.next());
                     return result;
                 }
@@ -75,6 +76,7 @@ public class ClassTable {
         }
         return null; // return null if no classes found for given gymId
     }
+
     // view schedule for all classes and sections
     public ArrayList<ClassSection> getClassScheduleAll() throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
@@ -85,9 +87,10 @@ public class ClassTable {
                     do {
                         // String name, int sec, String time, int day, int room, String Fname, String
                         // Lname
-                        result.add(new ClassSection(resultSet.getString("C.name"), resultSet.getInt("C.length"), 
+                        result.add(new ClassSection(resultSet.getString("C.name"), resultSet.getInt("C.length"),
                                 resultSet.getFloat("C.cost"), resultSet.getInt("S.Sec_no"),
-                                resultSet.getString("S.time"), resultSet.getInt("S.day_of_week"), resultSet.getInt("S.capacity"),
+                                resultSet.getString("S.time"), resultSet.getInt("S.day_of_week"),
+                                resultSet.getInt("S.capacity"),
                                 resultSet.getInt("S.Room_number"), resultSet.getString("T.first_name"),
                                 resultSet.getString("T.last_name")));
                     } while (resultSet.next());

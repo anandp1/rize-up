@@ -1,4 +1,5 @@
 package com.rizeup.backend.table;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -8,65 +9,69 @@ public class TrainsTable {
     public TrainsTable(Connection database) {
         this.connection = database;
     }
-    
-    //assign a trainer to member
+
+    // add trainer to member
     public String addTrainerToMember(String temail, String memail) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO TRAINS(trainer_email, member_email) VALUES (?,?)")) {
             statement.setString(1, temail);
             statement.setString(2, memail);
-            if (statement.executeUpdate() >0) {
+
+            if (statement.executeUpdate() > 0) {
                 return "Trainer added to member successfully";
             }
         }
-        return "Could not add member to trainer roster"; 
+        return "Could not add trainer to member roster";
     }
 
-    //remove trainer from member
+    // remove trainer from member
     public String removeTrainerFromMember(String temail, String memail) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "DELETE FROM TRAINS WHERE trainer_email =? AND member_email = ?")) {
             statement.setString(1, temail);
             statement.setString(2, memail);
-            if (statement.executeUpdate() >0) {
+            if (statement.executeUpdate() > 0) {
                 return "Trainer removed from member successfully";
             }
         }
-        return "Could not remove member from trainer roster"; 
+        return "Could not remove member from trainer roster";
     }
 
-    //get all members that trainer trains
+    // get all members that trainer trains
     public ArrayList<String> getTrainerClients(String temail) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT member_email FROM TRAINS WHERE trainer_email =? ")) {
+                "SELECT member_email FROM TRAINS WHERE trainer_email = ?")) {
+            statement.setString(1, temail);
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 if (resultSet.next()) {
                     ArrayList<String> result = new ArrayList<String>();
-                    do{
+                    do {
                         result.add(resultSet.getString("member_email"));
-                    }while(resultSet.next());
+                    } while (resultSet.next());
                     return result;
                 }
             }
         }
-        return null; 
+        return null;
     }
-    //get all trainers that train a member
+
+    // get all trainers that train a member
     public ArrayList<String> getMembersTrainers(String memail) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT trainer_email FROM TRAINS WHERE member_email =? ")) {
+                "SELECT trainer_email FROM TRAINS WHERE member_email = ?")) {
+            statement.setString(1, memail);
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 if (resultSet.next()) {
                     ArrayList<String> result = new ArrayList<String>();
-                    do{
+                    do {
                         result.add(resultSet.getString("trainer_email"));
-                    }while(resultSet.next());
+                    } while (resultSet.next());
                     return result;
                 }
             }
         }
-        return null; 
+        return null;
     }
 }

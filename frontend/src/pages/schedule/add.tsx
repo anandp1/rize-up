@@ -25,14 +25,13 @@ const AddClass: React.FC<AddClassProps> = ({
         <div className={classes.containers}>
           <div className="text-2xl font-bold">Our Classes</div>
         </div>
-        <Class usedBy={SignInRole.MEMBER} />
+        <Class usedBy={role as SignInRole} memberEmail={username} />
       </div>
     </Layout>
   );
 };
 
 const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log(context);
   const session = await getSession(context);
 
   if (!session?.user?.email) {

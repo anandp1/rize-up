@@ -29,11 +29,14 @@ async function auth(request: NextApiRequest, response: NextApiResponse) {
             return null;
           }
 
-          const res = await axios.post(`${process.env.RIZEUP_API}/sign-in`, {
-            email: username,
-            password,
-            role,
-          });
+          const res = await axios.post(
+            `${process.env.NEXT_PUBLIC_RIZE_API_URL}/sign-in`,
+            {
+              email: username,
+              password,
+              role,
+            }
+          );
 
           const responseData = await res.data;
 

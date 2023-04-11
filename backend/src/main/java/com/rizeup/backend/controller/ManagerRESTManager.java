@@ -23,7 +23,6 @@ import com.rizeup.backend.model.FrontDesk;
 import com.rizeup.backend.model.Trainer;
 import com.rizeup.backend.table.ClassTable;
 import com.rizeup.backend.table.FrontDeskTable;
-import com.rizeup.backend.table.ManagerTable;
 import com.rizeup.backend.table.MemberTable;
 import com.rizeup.backend.table.TrainerTable;
 
@@ -74,6 +73,21 @@ public class ManagerRESTManager {
     @GetMapping("/test")
     public String home() {
         return "Hello Manager!";
+    }
+
+    @GetMapping("/report")
+    @ResponseStatus(HttpStatus.OK)
+    public HashMap<String, Object> getReport() {
+        try {
+            HashMap<String, Object> response = new HashMap<>();
+            response.put("activeMembers", memberTable.getMemberCount());
+            response.put("classAttendance", classTable.getSectionCountAll());
+            response.put("newMembers", memberTable.getNewMemberCount());
+
+            return response;
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting report", e);
+        }
     }
 
     @PostMapping("member/delete/{memberEmail}")
@@ -137,8 +151,8 @@ public class ManagerRESTManager {
             ArrayList<FrontDesk> frontDesks = frontDeskTable.getAllFrontDesk(gymIdNum);
 
             HashMap<String, Object> response = new HashMap<>();
-            response.put("trainers", trainers);
-            response.put("frontDesks", frontDesks);
+            response.put("trainer", trainers);
+            response.put("frontDesk", frontDesks);
 
             return response;
         } catch (SQLException e) {
