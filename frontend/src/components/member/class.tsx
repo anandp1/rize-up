@@ -1,20 +1,46 @@
 import { Disclosure, Transition } from "@headlessui/react";
 import { AiOutlineUp } from "react-icons/ai";
-import { SignInRole } from "../../pages/sign-in";
+import useSWR from "swr";
+import { ClassSection } from "../../../interfaces/interface";
 
+import { fetcher } from "../../../utils/fetcher";
+import { SignInRole } from "../../pages/sign-in";
 import Section from "./section";
 
 interface ClassProps {
   usedBy?: SignInRole;
+  memberEmail?: string;
 }
 
-const Class: React.FC<ClassProps> = ({ usedBy }: ClassProps) => {
+const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
   const classes = {
     container: "bg-white rounded-lg flex flex-col p-5 mx-6",
     header: "flex justify-between items-center cursor-pointer",
     headerText: "text-lg font-bold",
     descriptionText: "text-sm text-gray-500 font-bold",
   };
+
+  // const { data: allClasses, error: allClassesError } = useSWR<ClassSection[]>(
+  //   `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/class/all/${process.env.NEXT_PUBLIC_GYM_ID}`,
+  //   fetcher
+  // );
+
+  // const {
+  //   data: memberSchedule,
+  //   error: memberScheduleError,
+  //   mutate: memberScheduleRevalidateData,
+  // } = useSWR<ClassSection[]>(
+  //   `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/schedule/${memberEmail}`,
+  //   fetcher
+  // );
+
+  // if (allClassesError || memberScheduleError) {
+  //   return <div>Failed to load</div>;
+  // }
+
+  // if (!allClasses || !memberSchedule) {
+  //   return <div>Loading...</div>;
+  // }
 
   const removeClass = () => {
     // api to remove class
