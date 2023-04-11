@@ -39,7 +39,11 @@ const Schedule: React.FC<ScheduleProps> = ({
     error,
     mutate: revalidateData,
   } = useSWR<ClassSection[]>(
-    `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/schedule/${username}`,
+    role === SignInRole.MEMBER
+      ? `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/schedule/${username}`
+      : `${process.env.NEXT_PUBLIC_RIZE_API_URL}/trainer/schedule/${
+          trainerEmail ?? username
+        }`,
     fetcher
   );
 
@@ -84,7 +88,7 @@ const Schedule: React.FC<ScheduleProps> = ({
           <ScheduleInfo scheduleByDay={scheduleByDay} />
         )}
         {(role === SignInRole.TRAINER || role === SignInRole.FRONT_DESK) && (
-          <ScheduleInfoTrainer trainerEmail={trainerEmail ?? username} />
+          <ScheduleInfoTrainer scheduleByDay={scheduleByDay} />
         )}
       </div>
     </Layout>
