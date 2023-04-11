@@ -24,7 +24,6 @@ export interface Trainer {
   middleName?: string;
   lastName: string;
   gymId: number;
-  about_me: string;
 }
 
 export interface Message {
@@ -36,7 +35,7 @@ export interface Message {
   mEmail: string;
 }
 
-interface TrainerInformation {
+export interface TrainerInformation {
   about_me: string;
   interests: string[];
   experience: TrainerExperience[];

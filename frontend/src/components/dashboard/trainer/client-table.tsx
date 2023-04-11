@@ -1,10 +1,24 @@
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { BsChatDots } from "react-icons/bs";
-import { MdOutlineCancel } from "react-icons/md";
+import useSWR from "swr";
+import axios from "axios";
+
+import {
+  Customer,
+  Message,
+  TrainerInformation,
+} from "../../../../interfaces/interface";
 
 import Model from "../../model/model";
+import { fetcher } from "../../../../utils/fetcher";
 
-const ClientTable = () => {
+interface ClientTableProps {
+  trainerDetails: TrainerInformation;
+}
+
+const ClientTable: React.FC<ClientTableProps> = ({
+  trainerDetails,
+}: ClientTableProps) => {
   const classes = {
     text: "text-left font-medium py-1",
     sentMessage:
@@ -15,18 +29,78 @@ const ClientTable = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState("");
+  const [chatHistory, setChatHistory] = useState<Message[]>([]);
+  const [member, setMember] = useState<Customer>();
 
-  const removeTrainerClicked = () => {
-    // api to remove trainer from user
+  const { data, error } = useSWR<Customer[]>(
+    `${process.env.NEXT_PUBLIC_RIZE_API_URL}/trainer/clients/${trainerDetails.trainerInfo.email}`,
+    fetcher
+  );
+
+  if (error) {
+    return <div>Failed to load</div>;
+  }
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
+  const sendMessage = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/trainer/client/chat/add`,
+        {
+          sender: trainerDetails.trainerInfo.email,
+          receiver: member?.email,
+          content: message,
+          mEmail: member?.email,
+          tEmail: trainerDetails.trainerInfo.email,
+        }
+      );
+
+      if (response.status === 200) {
+        // set data locally to avoid api call
+        setChatHistory((prev) => [
+          ...prev,
+          {
+            sender: trainerDetails.trainerInfo.email,
+            receiver: member?.email ?? "",
+            content: message,
+            tEmail: member?.email ?? "",
+            mEmail: trainerDetails.trainerInfo.email,
+            time: new Date().toISOString(),
+          },
+        ]);
+      }
+    } catch {
+      alert("Failed to send message. Please try again later.");
+    }
   };
 
-  const sendMessage = () => {
-    // api to send message to trainer
+  const openChatClicked = async (member: Customer): Promise<void> => {
+    setMember(member);
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/trainer/client/chat/history/${trainerDetails.trainerInfo.email}/${member.email}`
+      );
+
+      const sortedByDate = response.data.sort((a: Message, b: Message) => {
+        return new Date(a.time).getTime() - new Date(b.time).getTime();
+      });
+
+      setChatHistory(sortedByDate);
+
+      setChatOpen(true);
+    } catch {
+      alert("Failed to load chat history. Please try again later.");
+    }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (event.key === "Enter") {
-      sendMessage();
+      await sendMessage();
       setMessage("");
       if (inputRef.current) {
         inputRef.current.value = "";
@@ -38,11 +112,26 @@ const ClientTable = () => {
     <div className="w-full max-h-96 overflow-y-auto">
       {chatOpen && (
         <Model open={chatOpen} setOpen={setChatOpen}>
-          <h1 className="text-2xl font-bold">Joe</h1>
+          <h1 className="text-2xl font-bold">
+            {member?.firstName} {member?.lastName}
+          </h1>
 
-          <div className="flex flex-col overflow-y-auto h-[15rem] my-4 mx-2 gap-y-1">
-            <p className={classes.sentMessage}>Hello</p>
-            <p className={classes.receivedMessage}>Hi back</p>
+          <div className="flex flex-col overflow-y-auto h-[15rem] my-4 mx-2 gap-y-1 border p-2 bg-slate-100 border-slate-100">
+            {chatHistory.map((message: Message) => {
+              if (message.sender === trainerDetails.trainerInfo.email) {
+                return (
+                  <p key={message.time} className={classes.sentMessage}>
+                    {message.content}
+                  </p>
+                );
+              } else {
+                return (
+                  <p key={message.time} className={classes.receivedMessage}>
+                    {message.content}
+                  </p>
+                );
+              }
+            })}
           </div>
           <input
             ref={inputRef}
@@ -72,25 +161,35 @@ const ClientTable = () => {
           <div className="flex-1 px-4 py-2"></div>
         </div>
         <div className="flex flex-row border">
-          <div className="flex-1 px-4 py-2 flex items-center truncate">
-            <span>John Doe</span>
-          </div>
-          <div className="flex-1 px-4 py-2 flex items-center truncate">
-            johndoe@example.com
-          </div>
-          <div className="flex-1 px-4 py-2 flex items-center">15</div>
-          <div className="flex-1 px-4 py-2 flex items-center">M</div>
+          {data.map((member: Customer) => (
+            <Fragment key={member.email}>
+              <div className="flex-1 px-4 py-2 flex items-center truncate">
+                <span>
+                  {member.firstName} {member.lastName}
+                </span>
+              </div>
+              <div className="flex-1 px-4 py-2 flex items-center truncate">
+                {member.email}
+              </div>
+              <div className="flex-1 px-4 py-2 flex items-center">
+                {member.age}
+              </div>
+              <div className="flex-1 px-4 py-2 flex items-center">
+                {member.gender}
+              </div>
 
-          <div className="flex-1 px-4 py-2 flex items-center justify-end">
-            <div className="flex">
-              <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm mr-2">
-                <BsChatDots
-                  onClick={() => setChatOpen(true)}
-                  className="absolute top-1.5 left-1.5"
-                />
-              </button>
-            </div>
-          </div>
+              <div className="flex-1 px-4 py-2 flex items-center justify-end">
+                <div className="flex">
+                  <button className="mx-auto relative bg-slate-100 w-7 h-7 rounded-sm mr-2">
+                    <BsChatDots
+                      onClick={async () => await openChatClicked(member)}
+                      className="absolute top-1.5 left-1.5"
+                    />
+                  </button>
+                </div>
+              </div>
+            </Fragment>
+          ))}
         </div>
       </div>
     </div>
