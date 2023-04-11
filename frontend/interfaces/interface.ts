@@ -103,3 +103,9 @@ export interface EmployeeDetailsMap {
   trainer: Trainer[];
   frontDesk: FrontDesk[];
 }
+
+export interface Report {
+  activeMembers: number;
+  classAttendance: ClassSection[];
+  newMembers: number;
+}

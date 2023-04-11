@@ -11,8 +11,10 @@ import {
   Customer,
   Gym,
   Membership,
+  Report,
   TrainerInformation,
 } from "../../interfaces/interface";
+import ManagerDashboard from "../components/dashboard/manager/manager-dashboard";
 
 interface HomeProps {
   username: string;
@@ -20,6 +22,7 @@ interface HomeProps {
   userDetails: Customer | TrainerInformation;
   gymInfo: Gym;
   gymMembership: Membership[];
+  report: Report;
 }
 
 const Home: React.FC<HomeProps> = ({
@@ -28,10 +31,11 @@ const Home: React.FC<HomeProps> = ({
   userDetails,
   gymInfo,
   gymMembership,
+  report,
 }: HomeProps) => {
   return (
     <Layout>
-      {role === SignInRole.MANAGER && <p> Hello Manager</p>}
+      {role === SignInRole.MANAGER && <ManagerDashboard report={report} />}
       {role === SignInRole.MEMBER && (
         <MemberDashboard memberDetails={userDetails as Customer} />
       )}
@@ -80,6 +84,13 @@ const getServerSideProps: GetServerSideProps = async (context) => {
     );
   }
 
+  let reportResponse;
+  if (session.user.name === SignInRole.MANAGER) {
+    reportResponse = await axios.get(
+      `${process.env.NEXT_PUBLIC_RIZE_API_URL}/manager/report`
+    );
+  }
+
   return {
     props: {
       username: session.user.email,
@@ -87,6 +98,7 @@ const getServerSideProps: GetServerSideProps = async (context) => {
       userDetails: response?.data ?? [],
       gymInfo: gymInfoResponse?.data ?? [],
       gymMembership: gymMembershipResponse?.data ?? [],
+      report: reportResponse?.data ?? {},
     },
   };
 };
