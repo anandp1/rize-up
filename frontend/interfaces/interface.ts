@@ -71,3 +71,18 @@ export interface ClassSection {
 export interface ClassSectionsMap {
   [key: string]: ClassSection[];
 }
+
+export interface Gym {
+  passcode: number;
+  phone: string;
+  hours: string;
+  address: string;
+  name: string;
+}
+
+export interface Membership {
+  name: string;
+  duration: number;
+  price: number;
+  perks: string[];
+}
