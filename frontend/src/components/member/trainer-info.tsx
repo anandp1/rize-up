@@ -165,7 +165,6 @@ const TrainerInfo: React.FC<TrainerInfoProps> = ({
           </div>
         )
       )}
-      ;
     </>
   );
 };

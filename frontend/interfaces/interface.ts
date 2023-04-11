@@ -66,8 +66,9 @@ export interface ClassSection {
   tFname: string;
   tLname: string;
   joined: number;
+  trainer?: string;
 }
 
 export interface ClassSectionsMap {
-  [day: string]: ClassSection[];
+  [key: string]: ClassSection[];
 }

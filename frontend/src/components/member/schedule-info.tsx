@@ -1,5 +1,5 @@
 import { ClassSection, ClassSectionsMap } from "../../../interfaces/interface";
-import { getEndTime } from "../../../utils/add-time";
+import { daysMap, getEndTime } from "../../../utils/helper";
 
 interface ScheduleProps {
   scheduleByDay: ClassSectionsMap;
@@ -8,14 +8,6 @@ interface ScheduleProps {
 const ScheduleInfo: React.FC<ScheduleProps> = ({
   scheduleByDay,
 }: ScheduleProps) => {
-  const daysMap: { [key: string]: string } = {
-    "1": "Monday",
-    "2": "Tuesday",
-    "3": "Wednesday",
-    "4": "Thursday",
-    "5": "Friday",
-  };
-
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 sm:mx-8">
       <div className="flex flex-wrap justify-center mt-8 gap-3">

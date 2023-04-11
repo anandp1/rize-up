@@ -43,16 +43,18 @@ const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/account/${session.user.email}`
-  );
+  let response;
+  if (session.user.name === SignInRole.MEMBER) {
+    response = await axios.get(
+      `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/account/${session.user.email}`
+    );
+  }
 
   return {
     props: {
       username: session.user.email,
       role: session.user.name,
-      memberDetails: response.data,
+      memberDetails: response?.data ?? [],
     },
   };
 };

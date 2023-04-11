@@ -15,4 +15,12 @@ const getEndTime = (startTime: string, duration: number): string => {
   return formattedEndTime.toUpperCase();
 };
 
-export { getEndTime };
+const daysMap: { [key: string]: string } = {
+  "1": "Monday",
+  "2": "Tuesday",
+  "3": "Wednesday",
+  "4": "Thursday",
+  "5": "Friday",
+};
+
+export { daysMap, getEndTime };
