@@ -45,7 +45,7 @@ export interface TrainerInformation {
 interface TrainerExperience {
   trainer_email: string;
   description: string;
-  years_of_experience: number;
+  years: number;
   education: string;
 }
 

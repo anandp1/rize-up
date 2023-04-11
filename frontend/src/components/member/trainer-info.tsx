@@ -141,7 +141,7 @@ const TrainerInfo: React.FC<TrainerInfoProps> = ({
                     Trainer Experience:{" "}
                     {
                       filteredTrainersInformationMap[trainerEmail].experience[0]
-                        .years_of_experience
+                        .years
                     }{" "}
                     years
                   </li>
