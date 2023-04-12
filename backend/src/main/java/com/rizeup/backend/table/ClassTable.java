@@ -221,7 +221,7 @@ public class ClassTable {
     // delete a class
     public String removeClass(String cname) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM CLASS WHERE class_name = ?")) {
+                "DELETE FROM CLASS WHERE name = ?")) {
             statement.setString(1, cname);
             if (statement.executeUpdate() > 0) {
 

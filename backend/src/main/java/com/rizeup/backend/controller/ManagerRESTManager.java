@@ -124,8 +124,6 @@ public class ManagerRESTManager {
     @ResponseStatus(HttpStatus.OK)
     public ArrayList<ClassSection> getAllClasses(@PathVariable String gymId) {
         try {
-            int gymIdNum = Integer.parseInt(gymId);
-
             ArrayList<ClassSection> response = classTable.getClassScheduleAll();
 
             if (response == null) {
