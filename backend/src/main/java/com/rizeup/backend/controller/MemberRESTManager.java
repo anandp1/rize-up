@@ -286,4 +286,21 @@ public class MemberRESTManager {
                     "updateAccount - Error updating account");
         }
     }
+
+    @PostMapping("/account/update/password/{memberEmail}/{password}")
+    @ResponseStatus(HttpStatus.OK)
+    public String updatePassword(@PathVariable String memberEmail, @PathVariable String password) {
+        try {
+            String response = memberTable.updateMemberPassword(memberEmail, password);
+            if (response.equals("Member updated successfully")) {
+                return "Account Updated";
+            } else {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "updateAccount - Could not update account");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "updateAccount - Error updating account");
+        }
+    }
 }

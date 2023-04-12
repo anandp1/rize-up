@@ -150,6 +150,20 @@ public class MemberTable {
         return "Could not update member"; // return null if no member found with the given email and password
     }
 
+    public String updateMemberPassword(String email, String password) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "UPDATE MEMBER SET password = ? WHERE email = ?")) {
+            statement.setString(1, password);
+            statement.setString(2, email);
+
+            if (statement.executeUpdate() > 0) {
+                return "Member updated successfully";
+            }
+        }
+
+        return "Could not update member"; // return null if no member found with the given email and password
+    }
+
     // Get count of all members
     public int getMemberCount() throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
