@@ -126,9 +126,9 @@ public class ManagerRESTManager {
         try {
             int gymIdNum = Integer.parseInt(gymId);
 
-            ArrayList<ClassSection> response =  classTable.getClassScheduleByGym(gymIdNum);
+            ArrayList<ClassSection> response = classTable.getClassScheduleAll();
 
-            if(response == null) {
+            if (response == null) {
                 return new ArrayList<ClassSection>();
             }
 
@@ -136,6 +136,38 @@ public class ManagerRESTManager {
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting all classes");
+        }
+    }
+
+    @PostMapping("/class/add/{className}/{length}/{cost}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addClass(@PathVariable String className, @PathVariable String length, @PathVariable String cost) {
+        try {
+            int lengthInt = Integer.parseInt(length);
+            float costFloat = Float.parseFloat(cost);
+
+            classTable.addClass(className, lengthInt, costFloat);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error adding class");
+        }
+    }
+
+    @PostMapping("/class/add/{className}/{time}/{day}/{capacity}/{room}/{section}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addClassSection(@PathVariable String className, @PathVariable String time, @PathVariable String day,
+            @PathVariable String capacity, @PathVariable String room, @PathVariable String section) {
+        try {
+            int capacityInt = Integer.parseInt(capacity);
+            int roomInt = Integer.parseInt(room);
+            int sectionInt = Integer.parseInt(section);
+            int dayInt = Integer.parseInt(day);
+
+            classTable.addSectionToClass(className, time, dayInt, capacityInt, roomInt, sectionInt);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error adding class section");
         }
     }
 

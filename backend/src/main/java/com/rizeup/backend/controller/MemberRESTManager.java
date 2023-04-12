@@ -185,7 +185,7 @@ public class MemberRESTManager {
         try {
             int gymIdNum = Integer.parseInt(gymId);
 
-            ArrayList<ClassSection> response = classTable.getClassScheduleByGym(gymIdNum);
+            ArrayList<ClassSection> response = classTable.getClassScheduleAll();
 
             if (response == null) {
                 return new ArrayList<ClassSection>();

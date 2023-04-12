@@ -13,7 +13,7 @@ Ensure you have `mvnw` installed on your development computer
 Note: If you are using Windows, you will need to install [Git Bash](https://git-scm.com/downloads) to run the `mvnw` command.
 Note: If you are using Mac OS, you will not need to install Maven as it is already installed on your computer.
 
-- [Java 11 SDK](https://www.oracle.com/ca-en/java/technologies/javase-jdk11-downloads.html)
+- [Java 17 SDK](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 - [Node.js](https://nodejs.org/en/)
 - [Maven](https://maven.apache.org/install.html)
 

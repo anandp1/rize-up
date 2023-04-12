@@ -8,6 +8,7 @@ import { ClassSection, ClassSectionsMap } from "../../../interfaces/interface";
 import { fetcher } from "../../../utils/fetcher";
 import { SignInRole } from "../../pages/sign-in";
 import Section from "./section";
+import ManageClassOptions from "../manager/manage-class-options";
 
 interface ClassProps {
   usedBy?: SignInRole;
@@ -31,7 +32,6 @@ const groupClassesByClassName = (classes: ClassSection[]): ClassSectionsMap => {
 };
 
 const removeBySec = (x: ClassSection[], y: ClassSection[]): ClassSection[] => {
-  const ySecs = new Set(y.map((cs) => cs.sec));
   return x.filter((cs) => {
     const isInY = y.find((yCs) => yCs.sec === cs.sec && yCs.name === cs.name);
     return !isInY;
@@ -106,6 +106,12 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
 
   return (
     <>
+      {usedBy === SignInRole.MANAGER && (
+        <ManageClassOptions
+          allClassNames={Object.keys(groupClassesByClassName(allClasses))}
+          allClassesRevalidateData={allClassesRevalidateData}
+        />
+      )}
       {Object.keys(allClassesByClassName).map((className) => (
         <Disclosure key={className}>
           {({ open }) => (
@@ -126,7 +132,7 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
                 {SignInRole.MANAGER === usedBy && (
                   <button
                     onClick={async () => await removeClass(className)}
-                    className="px-4 py-2 bg-red-500 text-white rounded-md mt-3 mb-1 ml-auto w-1/3"
+                    className="px-4 py-2 bg-red-500 text-white rounded-md mt-3 mb-1 ml-auto w-full sm:w-fit"
                   >
                     Remove Class
                   </button>

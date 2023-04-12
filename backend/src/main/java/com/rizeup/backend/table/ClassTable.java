@@ -122,13 +122,13 @@ public class ClassTable {
     }
 
     // Add Section to a class
-    public String addSectionToClass(String cname, String time, String day, int capacity, int room, int Sec)
+    public String addSectionToClass(String cname, String time, int day, int capacity, int room, int Sec)
             throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO SECTION (Sec_no, time, day_of_week, capacity, Room_number, class_name) VALUES (?,?,?,?,?,?)")) {
             statement.setInt(1, Sec);
             statement.setString(2, time);
-            statement.setString(3, day);
+            statement.setInt(3, day);
             statement.setInt(4, capacity);
             statement.setInt(5, room);
             statement.setString(6, cname);
@@ -170,6 +170,7 @@ public class ClassTable {
                 return "ClassSection added successful";
             }
         }
+
         return "ClassSection could not be added";
     }
 
