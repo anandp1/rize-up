@@ -88,7 +88,7 @@ const Settings: React.FC<SettingsProps> = ({
           >
             <div className="flex flex-col gap-y-5 bg-white rounded-lg p-5">
               <div className="text-2xl font-bold mb-4">Update Profile</div>
-              <div className="overflow-y-auto max-h-[18rem]">
+              <div className="overflow-y-auto max-h-[18rem] p-2">
                 <div className="flex flex-col gap-y-4">
                   <div className="flex flex-col gap-y-2">
                     <p className="text-lg font-semibold mb-2">
