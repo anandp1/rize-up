@@ -80,6 +80,9 @@ const ClientTable: React.FC<ClientTableProps> = ({
   const openChatClicked = async (member: Customer): Promise<void> => {
     setMember(member);
     try {
+      console.log(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/trainer/client/chat/history/${trainerDetails.trainerInfo.email}/${member.email}`
+      );
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_RIZE_API_URL}/trainer/client/chat/history/${trainerDetails.trainerInfo.email}/${member.email}`
       );

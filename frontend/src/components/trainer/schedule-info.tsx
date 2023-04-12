@@ -36,9 +36,13 @@ const ScheduleInfoTrainer: React.FC<ScheduleInfoTrainerProps> = ({
           <div className="flex flex-col gap-y-2">
             <div className="text-xl font-bold">Class List</div>
             <div className="flex flex-col gap-y-1">
-              {classList.map((member, index) => (
-                <div key={index}>{member}</div>
-              ))}
+              {classList.length > 0 ? (
+                classList.map((member, index) => (
+                  <div key={index}>{member}</div>
+                ))
+              ) : (
+                <div>No members in this class</div>
+              )}
             </div>
           </div>
         </Model>

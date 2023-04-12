@@ -26,8 +26,10 @@ const Schedule: React.FC<ScheduleProps> = ({
   };
 
   const router = useRouter();
-  const trainerEmail = decodeURIComponent(router.query.trainerEmail as string);
-  console.log(trainerEmail);
+  const trainerEmail = decodeURIComponent(
+    (router.query.trainerEmail || "") as string
+  );
+
   if (
     (SignInRole.FRONT_DESK === role && !trainerEmail) ||
     SignInRole.MANAGER === role
@@ -43,7 +45,7 @@ const Schedule: React.FC<ScheduleProps> = ({
     role === SignInRole.MEMBER
       ? `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/schedule/${username}`
       : `${process.env.NEXT_PUBLIC_RIZE_API_URL}/trainer/schedule/${
-          trainerEmail ?? username
+          trainerEmail ? trainerEmail : username
         }`,
     fetcher
   );
@@ -107,6 +109,8 @@ const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
+
+  console.log(session.user.email);
 
   return {
     props: {

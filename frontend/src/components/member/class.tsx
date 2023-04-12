@@ -32,14 +32,17 @@ const groupClassesByClassName = (classes: ClassSection[]): ClassSectionsMap => {
 
 const removeBySec = (x: ClassSection[], y: ClassSection[]): ClassSection[] => {
   const ySecs = new Set(y.map((cs) => cs.sec));
-  return x.filter((cs) => !ySecs.has(cs.sec));
+  return x.filter((cs) => {
+    const isInY = y.find((yCs) => yCs.sec === cs.sec && yCs.name === cs.name);
+    return !isInY;
+  });
 };
 
 const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
   const classes = {
     container: "bg-white rounded-lg flex flex-col p-5 mx-6",
     header: "flex justify-between items-center cursor-pointer",
-    headerText: "text-lg font-bold",
+    headerText: "text-lg font-bold text-left",
     descriptionText: "text-sm text-gray-500 font-bold",
   };
 
@@ -100,6 +103,8 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
       alert("Failed to remove class");
     }
   };
+
+  console.log(allClassesByClassName);
 
   return (
     <>
