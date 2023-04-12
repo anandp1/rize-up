@@ -104,8 +104,6 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
     }
   };
 
-  console.log(allClassesByClassName);
-
   return (
     <>
       {Object.keys(allClassesByClassName).map((className) => (

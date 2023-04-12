@@ -68,7 +68,6 @@ const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  console.log(response.data);
   return {
     props: {
       username: session.user.email,

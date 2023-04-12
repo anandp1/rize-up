@@ -47,7 +47,7 @@ const Settings: React.FC<SettingsProps> = ({
       alert(response.data.message);
       signOut();
     } catch {
-      console.log("Error deleting account");
+      alert("Error deleting account");
     }
   };
 

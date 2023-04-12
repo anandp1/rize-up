@@ -1,40 +1,51 @@
 import classNames from "classnames";
-import { GetServerSideProps } from "next";
-import { getSession, signIn } from "next-auth/react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { RxChevronLeft } from "react-icons/rx";
+import Link from "next/link";
 
-export enum SignInRole {
-  MANAGER = "Manager",
-  MEMBER = "Member",
-  FRONT_DESK = "Front Desk",
-  TRAINER = "Trainer",
+export enum Gender {
+  M = "Male",
+  F = "Female",
 }
 
-const SignIn: React.FC = () => {
+const SignUp = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [dropdown, setDropdown] = useState(false);
-  const [role, setRole] = useState<SignInRole>(SignInRole.MANAGER);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState<Gender>(Gender.M);
 
   const router = useRouter();
+  const handleSignUp = async () => {
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_RIZE_API_URL}/sign-up`, {
+        email: username,
+        password,
+        birthDate,
+        gender,
+        firstName,
+        lastName,
+      });
 
-  const handleSignIn = () => {
-    signIn("credentials", {
-      username: `${role}-${username}`,
-      password,
-      redirect: false,
-    });
-
-    router.push("/");
+      alert("Account created successfully");
+      router.push("/sign-in");
+    } catch {
+      alert("Error creating account");
+    }
   };
 
   return (
     <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8 mt-24 mx-8">
+      <Link href="/">
+        <RxChevronLeft className="w-8 h-8" />
+      </Link>
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Sign in to your account
+          Create a Account
         </h2>
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -53,7 +64,6 @@ const SignIn: React.FC = () => {
                   name="username"
                   type="username"
                   autoComplete="username"
-                  required
                   onChange={(event) => setUsername(event.target.value)}
                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
@@ -79,11 +89,49 @@ const SignIn: React.FC = () => {
                 />
               </div>
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Birth Date
+              </label>
+              <div className="mt-1">
+                <input
+                  type="date"
+                  required
+                  className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  onChange={(event) => setBirthDate(event.target.value)}
+                  value={birthDate}
+                ></input>
+              </div>
+            </div>
+            <div className="flex flex-row gap-x-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  First Name
+                </label>
+                <div className="mt-1">
+                  <input
+                    onChange={(event) => setFirstName(event.target.value)}
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Last Name
+                </label>
+                <div className="mt-1">
+                  <input
+                    onChange={(event) => setLastName(event.target.value)}
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+            </div>
             <button
               onClick={() => setDropdown(!dropdown)}
               className="text-white bg-blue-700 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
             >
-              {role || "Select Role"}
+              {gender || "Select gender"}
               <svg
                 className="w-4 h-4 ml-2"
                 aria-hidden="true"
@@ -107,16 +155,16 @@ const SignIn: React.FC = () => {
               )}
             >
               <ul className="py-2 text-sm text-gray-700 w-full">
-                {Object.values(SignInRole).map((role) => (
-                  <li key={role}>
+                {Object.values(Gender).map((gender) => (
+                  <li key={gender}>
                     <button
                       onClick={() => {
-                        setRole(role);
+                        setGender(gender);
                         setDropdown(false);
                       }}
                       className="block text-center w-full py-2 hover:bg-gray-100"
                     >
-                      {role}
+                      {gender}
                     </button>
                   </li>
                 ))}
@@ -124,31 +172,11 @@ const SignIn: React.FC = () => {
             </div>
             <div>
               <button
-                onClick={handleSignIn}
+                onClick={handleSignUp}
                 className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
-                Sign in
+                Create Account
               </button>
-            </div>
-          </div>
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">Or</span>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <div>
-                <Link passHref href="/sign-up">
-                  <button className="flex w-full justify-center rounded-md border border-transparent bg-indigo-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Create an account
-                  </button>
-                </Link>
-              </div>
             </div>
           </div>
         </div>
@@ -157,23 +185,4 @@ const SignIn: React.FC = () => {
   );
 };
 
-const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
-
-  if (session?.user?.email) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};
-
-export { getServerSideProps };
-
-export default SignIn;
+export default SignUp;

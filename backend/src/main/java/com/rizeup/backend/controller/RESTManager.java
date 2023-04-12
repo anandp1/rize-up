@@ -2,7 +2,14 @@ package com.rizeup.backend.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Date;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,12 +73,6 @@ public class RESTManager {
         return "Hello World!";
     }
 
-    // @GetMapping("/sign-in")
-    // public Member signIn(@RequestParam String email, @RequestParam String
-    // password) throws SQLException {
-    // return memberTable.getMember(email, password);
-    // }
-
     @PostMapping("/sign-in")
     @ResponseStatus(HttpStatus.OK)
     public Object signIn(@RequestBody SignInCredentials credentials) throws SQLException {
@@ -109,6 +110,34 @@ public class RESTManager {
             return manager;
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
+        }
+    }
+
+    @PostMapping("/sign-up")
+    @ResponseStatus(HttpStatus.OK)
+    public void signUp(@RequestBody SignUpCredentials credentials) throws SQLException, ParseException {
+        String email = credentials.getEmail();
+        String password = credentials.getPassword();
+        String gender = credentials.getGender();
+        String birthDate = credentials.getBirthDate();
+        String firstName = credentials.getFirstName();
+        String lastName = credentials.getLastName();
+
+        // Calculate age based on the difference between the birthdate and the current
+        // date
+        Period agePeriod = Period.between(LocalDate.parse(birthDate), LocalDate.now());
+        int age = agePeriod.getYears();
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date date = format.parse(birthDate);
+        java.sql.Date birthDateSQL = new java.sql.Date(date.getTime());
+        java.sql.Date currentTimeSQL = new java.sql.Date(new Date().getTime());
+
+        try {
+            memberTable.addMember(email, birthDateSQL, age, gender, password, firstName, lastName,
+                    currentTimeSQL, "Basic", 2);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "signUp - Invalid request");
         }
     }
 }

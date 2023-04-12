@@ -49,7 +49,7 @@ const ClientInfo = () => {
 
       alert(response.data.message);
     } catch {
-      console.log("Error deleting account");
+      alert("Error deleting account");
     }
   };
   return (

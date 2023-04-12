@@ -80,16 +80,16 @@ public class MemberTable {
     // email, birth_date, age, gender, password, first_name, middle_name, last_name,
     // date_joined, membership_name, gym_id
     public String addMember(String email, Date birth, int age, String gender, String password, String fname,
-            String mname, String lname, Date joined, String membership, int gym_id) throws SQLException {
+            String lname, Date joined, String membership, int gym_id) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO MEMBER (email, birth_date, age, gender, password, first_name, middle_name, last_name, date_joined, membership_name, gym_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)")) {
             statement.setString(1, email);
             statement.setDate(2, birth);
             statement.setInt(3, age);
-            statement.setString(4, gender);
+            statement.setString(4, gender.substring(0, 1));
             statement.setString(5, password);
             statement.setString(6, fname);
-            statement.setString(7, mname);
+            statement.setString(7, null);
             statement.setString(8, lname);
             statement.setDate(9, joined);
             statement.setString(10, membership);
