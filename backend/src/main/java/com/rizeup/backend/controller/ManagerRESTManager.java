@@ -61,15 +61,6 @@ public class ManagerRESTManager {
         }
     }
 
-    // - [ ] Report (number of active members at the gym, people attend for each
-    // section at each class, how many new members joined past 30 days)
-    // - [ ] Delete a member account
-    // - [ ] Update member information
-    // - [ ] Remove a class
-    // - [ ] Get all available classes and sections
-    // - [ ] Get all employees
-    // - [ ] Delete a employee account
-
     @GetMapping("/test")
     public String home() {
         return "Hello Manager!";
@@ -135,7 +126,13 @@ public class ManagerRESTManager {
         try {
             int gymIdNum = Integer.parseInt(gymId);
 
-            return classTable.getClassScheduleByGym(gymIdNum);
+            ArrayList<ClassSection> response =  classTable.getClassScheduleByGym(gymIdNum);
+
+            if(response == null) {
+                return new ArrayList<ClassSection>();
+            }
+
+            return response;
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting all classes");
