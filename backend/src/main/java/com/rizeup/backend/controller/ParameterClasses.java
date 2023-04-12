@@ -67,3 +67,40 @@ class SignUpCredentials {
         return lastName;
     }
 }
+
+class ProfileBody {
+    private String email;
+    private String about_me;
+    private String years;
+    private String description;
+    private String education;
+
+    public ProfileBody(String email, String about_me, String years, String description, String education) {
+        this.email = email;
+        this.about_me = about_me;
+        this.years = years;
+        this.description = description;
+        this.education = education;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getAbout_me() {
+        return about_me;
+    }
+
+    public String getYears() {
+        return years;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+}

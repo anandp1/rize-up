@@ -1,16 +1,19 @@
 import { Dispatch, Fragment, SetStateAction } from "react";
 import { Transition, Dialog } from "@headlessui/react";
+import classNames from "classnames";
 
 interface ModelProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   children: React.ReactNode;
+  ignoreHeight?: boolean;
 }
 
 const Model: React.FC<ModelProps> = ({
   open,
   setOpen,
   children,
+  ignoreHeight = false,
 }: ModelProps) => {
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -46,7 +49,12 @@ const Model: React.FC<ModelProps> = ({
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block align-bottom bg-white rounded-lg w-[90%] px-4 pt-5 pb-4 text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 max-h-96">
+            <div
+              className={classNames(
+                "inline-block align-bottom bg-white rounded-lg w-[90%] px-4 pt-5 pb-4 text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6",
+                ignoreHeight ? "" : "max-h-96"
+              )}
+            >
               {children}
             </div>
           </Transition.Child>
