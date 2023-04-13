@@ -282,6 +282,6 @@ public class ClassTable {
                 }
             }
         }
-        return null;
+        return new ArrayList<ClassSection>();
     }
 }

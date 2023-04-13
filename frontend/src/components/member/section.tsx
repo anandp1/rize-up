@@ -100,12 +100,15 @@ const Section: React.FC<SectionProps> = ({
                   <p className={classes.descriptionText}>
                     {section.trainer}, Room {section.room}
                   </p>
-                  <AiOutlineEye
-                    onClick={async () =>
-                      await viewClassListClicked(section.sec, section.name)
-                    }
-                    className="my-auto hover:cursor-pointer"
-                  />
+                  {(usedBy === SignInRole.MANAGER ||
+                    usedBy === SignInRole.FRONT_DESK) && (
+                    <AiOutlineEye
+                      onClick={async () =>
+                        await viewClassListClicked(section.sec, section.name)
+                      }
+                      className="my-auto hover:cursor-pointer"
+                    />
+                  )}
                 </div>
                 <p className={classes.descriptionText}>
                   Max {section.capacity}
