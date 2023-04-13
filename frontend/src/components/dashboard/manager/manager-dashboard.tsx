@@ -32,8 +32,6 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
     groupedClassSections[classSection.name].push(classSection);
   }
 
-  console.log(report);
-
   return (
     <div className="flex flex-col gap-y-5">
       <div className={classes.containers}>

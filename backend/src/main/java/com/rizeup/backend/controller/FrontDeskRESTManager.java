@@ -76,7 +76,13 @@ public class FrontDeskRESTManager {
     @ResponseStatus(HttpStatus.OK)
     public ArrayList<Membership> getMemberships(@PathVariable int gymId) {
         try {
-            return membershipTable.getMembershipsByGym(gymId);
+            ArrayList<Membership> response = membershipTable.getMembershipsByGym(gymId);
+
+            if (response == null) {
+                return new ArrayList<Membership>();
+            }
+
+            return response;
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting memberships");
         }
@@ -86,7 +92,13 @@ public class FrontDeskRESTManager {
     @ResponseStatus(HttpStatus.OK)
     public List<Member> getAllMembers() {
         try {
-            return memberTable.getAllMembers();
+            List<Member> response = memberTable.getAllMembers();
+
+            if (response == null) {
+                return new ArrayList<Member>();
+            }
+
+            return response;
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting all members");
         }

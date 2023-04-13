@@ -188,6 +188,22 @@ public class TrainerTable {
         return "Could not add trainer interest";
     }
 
+    // Add trainer profile
+    public String updateTrainerProfile(String email, String about_me) throws SQLException {
+        // make a statement to update the profile
+        try (PreparedStatement statement = connection.prepareStatement(
+                "UPDATE PROFILE SET about_me = ? WHERE trainer_email = ?")) {
+            statement.setString(1, about_me);
+            statement.setString(2, email);
+            if (statement.executeUpdate() > 0) {
+
+                return "Succesfully updated Trainer interest";
+            }
+        }
+
+        return "Could not add trainer interest";
+    }
+
     // delete trainer profile
     public String removeTrainerProfile(String email, String about_me) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
@@ -288,6 +304,24 @@ public class TrainerTable {
             if (statement.executeUpdate() > 0) {
 
                 return "Succesfully added Trainer experience";
+            }
+        }
+        return "Could not add trainer experience";
+    }
+
+    // add trainer experience
+    public String updateTrainerExperience(String email, String description, int years, String education)
+            throws SQLException {
+        // make a statement to update into trainer expereince
+        try (PreparedStatement statement = connection.prepareStatement(
+                "UPDATE TRAINER_EXPERIENCE SET description = ?, years_of_experience = ?, education = ? WHERE trainer_email = ?")) {
+            statement.setString(1, description);
+            statement.setInt(2, years);
+            statement.setString(3, education);
+            statement.setString(4, email);
+            if (statement.executeUpdate() > 0) {
+
+                return "Succesfully updated Trainer experience";
             }
         }
         return "Could not add trainer experience";

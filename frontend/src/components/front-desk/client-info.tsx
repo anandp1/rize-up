@@ -49,11 +49,11 @@ const ClientInfo = () => {
 
       alert(response.data.message);
     } catch {
-      console.log("Error deleting account");
+      alert("Error deleting account");
     }
   };
   return (
-    <div className="flex">
+    <div className="flex flex-col gap-y-2">
       {updateInfoModel && (
         <Model open={updateInfoModel} setOpen={setUpdateInfoModel}>
           <div className="flex flex-col gap-y-3">
@@ -119,7 +119,7 @@ const ClientInfo = () => {
       {clientInfo.map((client) => (
         <div
           key={client.email}
-          className="bg-white rounded-lg flex flex-col px-6 pt-8 pb-4 max-w-lg mx-auto max-h-screen overflow-y-auto"
+          className="bg-white rounded-lg flex flex-col px-6 pt-8 pb-4 max-w-lg mx-auto"
         >
           <div className="grid grid-cols-2 gap-x-8 gap-y-4">
             <div className="flex flex-col">

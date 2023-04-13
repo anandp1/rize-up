@@ -80,7 +80,11 @@ public class ClassTable {
     // view schedule for all classes and sections
     public ArrayList<ClassSection> getClassScheduleAll() throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "SELECT C.*, S.*, T.first_name, T.last_name FROM CLASS AS C, SECTION AS S, TEACHES AS X, TRAINER AS T WHERE S.class_name = C.name AND X.Sec_no = S.Sec_no AND C.name = X.class_name AND T.email = X.trainer_email")) {
+                "SELECT C.*, S.*, T.first_name, T.last_name " +
+                        "FROM CLASS AS C " +
+                        "LEFT JOIN SECTION AS S ON S.class_name = C.name " +
+                        "LEFT JOIN TEACHES AS X ON X.class_name = C.name AND X.Sec_no = S.Sec_no " +
+                        "LEFT JOIN TRAINER AS T ON T.email = X.trainer_email")) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     ArrayList<ClassSection> result = new ArrayList<ClassSection>();
@@ -98,6 +102,7 @@ public class ClassTable {
                 }
             }
         }
+
         return null; // return null if no classes found
     }
 
@@ -122,13 +127,13 @@ public class ClassTable {
     }
 
     // Add Section to a class
-    public String addSectionToClass(String cname, String time, String day, int capacity, int room, int Sec)
+    public String addSectionToClass(String cname, String time, int day, int capacity, int room, int Sec)
             throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "INSERT INTO SECTION (Sec_no, time, day_of_week, capacity, Room_number, class_name) VALUES (?,?,?,?,?,?)")) {
             statement.setInt(1, Sec);
             statement.setString(2, time);
-            statement.setString(3, day);
+            statement.setInt(3, day);
             statement.setInt(4, capacity);
             statement.setInt(5, room);
             statement.setString(6, cname);
@@ -170,6 +175,7 @@ public class ClassTable {
                 return "ClassSection added successful";
             }
         }
+
         return "ClassSection could not be added";
     }
 
@@ -220,7 +226,7 @@ public class ClassTable {
     // delete a class
     public String removeClass(String cname) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
-                "DELETE FROM CLASS WHERE class_name = ?")) {
+                "DELETE FROM CLASS WHERE name = ?")) {
             statement.setString(1, cname);
             if (statement.executeUpdate() > 0) {
 

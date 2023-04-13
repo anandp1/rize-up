@@ -139,8 +139,8 @@ const SideNavBar = () => {
     },
   ];
   return (
-    <div className="flex flex-col px-5">
-      <div className="mt-6 mb-16">
+    <div className="flex flex-col px-5 mx-auto">
+      <div className="mt-6 mb-14">
         <p className="text-violet-900 font-semibold">Rize Up</p>
         <button
           onClick={signOutClicked}

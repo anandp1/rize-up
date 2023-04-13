@@ -20,7 +20,9 @@ const Client: React.FC<ClientProps> = ({ username, role }: ClientProps) => {
         <div className={classes.containers}>
           <div className="text-2xl font-bold">All Clients</div>
         </div>
-        <ClientInfo />
+        <div className="flex flex-col overflow-y-auto max-h-[44rem]">
+          <ClientInfo />
+        </div>
       </div>
     </Layout>
   );

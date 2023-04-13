@@ -100,7 +100,13 @@ public class TrainerRESTManager {
     @ResponseStatus(HttpStatus.OK)
     public List<Message> getChatHistory(@PathVariable String trainerEmail, @PathVariable String memberEmail) {
         try {
-            return messageTable.getMessages(trainerEmail, memberEmail);
+            List<Message> response = messageTable.getMessages(trainerEmail, memberEmail);
+
+            if (response == null) {
+                return new ArrayList<Message>();
+            }
+
+            return response;
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting chat history");
@@ -154,12 +160,35 @@ public class TrainerRESTManager {
         }
     }
 
+    @PostMapping("/profile/update")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProfile(@RequestBody ProfileBody profileBody) {
+        try {
+            // turn years from string to int
+            int years = Integer.parseInt((String) profileBody.getYears());
+
+            trainerTable.updateTrainerExperience(profileBody.getEmail(),
+                    profileBody.getDescription(), years, profileBody.getEducation());
+            trainerTable.updateTrainerProfile(profileBody.getEmail(), profileBody.getAbout_me());
+
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "updateProfile - Error updating trainer profile");
+        }
+    }
+
     @GetMapping("/classlist/{sectionNumber}/{className}")
     @ResponseStatus(HttpStatus.OK)
     public ArrayList<String> getClassList(@PathVariable String sectionNumber, @PathVariable String className) {
         try {
             int sectionNumberInt = Integer.parseInt(sectionNumber);
-            return classTable.getSectionList(className, sectionNumberInt);
+            ArrayList<String> response = classTable.getSectionList(className, sectionNumberInt);
+
+            if (response == null) {
+                return new ArrayList<String>();
+            }
+
+            return response;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,

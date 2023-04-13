@@ -37,7 +37,10 @@ const Home: React.FC<HomeProps> = ({
     <Layout>
       {role === SignInRole.MANAGER && <ManagerDashboard report={report} />}
       {role === SignInRole.MEMBER && (
-        <MemberDashboard memberDetails={userDetails as Customer} />
+        <MemberDashboard
+          memberDetails={userDetails as Customer}
+          gymMembership={gymMembership}
+        />
       )}
       {role === SignInRole.FRONT_DESK && (
         <FrontDeskDashboard gymInfo={gymInfo} gymMembership={gymMembership} />
@@ -75,7 +78,10 @@ const getServerSideProps: GetServerSideProps = async (context) => {
 
   let gymInfoResponse;
   let gymMembershipResponse;
-  if (session.user.name === SignInRole.FRONT_DESK) {
+  if (
+    session.user.name === SignInRole.FRONT_DESK ||
+    session.user.name === SignInRole.MEMBER
+  ) {
     gymInfoResponse = await axios.get(
       `${process.env.NEXT_PUBLIC_RIZE_API_URL}/frontdesk/gyminfo/${process.env.NEXT_PUBLIC_GYM_ID}`
     );

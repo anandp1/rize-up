@@ -61,15 +61,6 @@ public class ManagerRESTManager {
         }
     }
 
-    // - [ ] Report (number of active members at the gym, people attend for each
-    // section at each class, how many new members joined past 30 days)
-    // - [ ] Delete a member account
-    // - [ ] Update member information
-    // - [ ] Remove a class
-    // - [ ] Get all available classes and sections
-    // - [ ] Get all employees
-    // - [ ] Delete a employee account
-
     @GetMapping("/test")
     public String home() {
         return "Hello Manager!";
@@ -133,12 +124,48 @@ public class ManagerRESTManager {
     @ResponseStatus(HttpStatus.OK)
     public ArrayList<ClassSection> getAllClasses(@PathVariable String gymId) {
         try {
-            int gymIdNum = Integer.parseInt(gymId);
+            ArrayList<ClassSection> response = classTable.getClassScheduleAll();
 
-            return classTable.getClassScheduleByGym(gymIdNum);
+            if (response == null) {
+                return new ArrayList<ClassSection>();
+            }
+
+            return response;
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error getting all classes");
+        }
+    }
+
+    @PostMapping("/class/add/{className}/{length}/{cost}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addClass(@PathVariable String className, @PathVariable String length, @PathVariable String cost) {
+        try {
+            int lengthInt = Integer.parseInt(length);
+            float costFloat = Float.parseFloat(cost);
+
+            classTable.addClass(className, lengthInt, costFloat);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error adding class");
+        }
+    }
+
+    @PostMapping("/class/add/{className}/{time}/{day}/{capacity}/{room}/{section}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addClassSection(@PathVariable String className, @PathVariable String time, @PathVariable String day,
+            @PathVariable String capacity, @PathVariable String room, @PathVariable String section) {
+        try {
+            int capacityInt = Integer.parseInt(capacity);
+            int roomInt = Integer.parseInt(room);
+            int sectionInt = Integer.parseInt(section);
+            int dayInt = Integer.parseInt(day);
+
+            classTable.addSectionToClass(className, time, dayInt, capacityInt, roomInt, sectionInt);
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error adding class section");
         }
     }
 

@@ -23,8 +23,10 @@ const Settings: React.FC<SettingsProps> = ({
   const memberships = ["Basic", "Premium", "Gold"];
 
   const [updateInfoModel, setUpdateInfoModel] = useState(false);
+  const [changePasswordModel, setChangePasswordModel] = useState(false);
   const [selectedMembership, setSelectedMembership] = useState(memberships[0]);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const {
     data: memberInfo,
@@ -47,7 +49,7 @@ const Settings: React.FC<SettingsProps> = ({
       alert(response.data.message);
       signOut();
     } catch {
-      console.log("Error deleting account");
+      alert("Error deleting account");
     }
   };
 
@@ -65,8 +67,41 @@ const Settings: React.FC<SettingsProps> = ({
     setUpdateInfoModel(false);
   };
 
+  const updatePassword = async () => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_RIZE_API_URL}/member/account/update/password/${username}/${password}`
+      );
+
+      alert("Password updated successfully");
+      revalidateData();
+    } catch {
+      alert("Error updating password");
+    }
+    setChangePasswordModel(false);
+  };
+
   return (
     <Layout>
+      {changePasswordModel && (
+        <Model open={changePasswordModel} setOpen={setChangePasswordModel}>
+          <div className="flex flex-col gap-y-3">
+            <p className="text-xl text-center font-bold">Change Password</p>
+            <input
+              className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              className="px-4 py-2 bg-slate-100 rounded-md border border-slate-100"
+              onClick={updatePassword}
+            >
+              Update
+            </button>
+          </div>
+        </Model>
+      )}
       {updateInfoModel && (
         <Model open={updateInfoModel} setOpen={setUpdateInfoModel}>
           <div className="flex flex-col gap-y-3">
@@ -131,6 +166,13 @@ const Settings: React.FC<SettingsProps> = ({
       )}
       <div className="flex flex-col gap-y-5 h-screen justify-center">
         <MemberInfo memberInfo={memberInfo} />
+        <p
+          onClick={() => setChangePasswordModel(true)}
+          className="text-blue-500 hover:underline hover:cursor-pointer mx-auto"
+        >
+          Change Password
+        </p>
+
         <div className="mt-6 flex justify-center gap-x-4">
           <button
             onClick={() => setUpdateInfoModel(true)}

@@ -1,15 +1,18 @@
+import classNames from "classnames";
 import Link from "next/link";
 import { AiOutlinePlus } from "react-icons/ai";
 
-import { Customer } from "../../../../interfaces/interface";
+import { Customer, Membership } from "../../../../interfaces/interface";
 import TrainerTable from "./trainer-table";
 
 interface MemberDashboardProps {
   memberDetails: Customer;
+  gymMembership: Membership[];
 }
 
 const MemberDashboard: React.FC<MemberDashboardProps> = ({
   memberDetails,
+  gymMembership,
 }: MemberDashboardProps) => {
   const classes = {
     containers: "bg-white rounded-lg flex flex-col p-5",
@@ -35,6 +38,28 @@ const MemberDashboard: React.FC<MemberDashboardProps> = ({
           </Link>
         </div>
         <TrainerTable memberDetails={memberDetails} />
+      </div>
+
+      <div className={classNames(classes.containers, "mx-8")}>
+        <p className="text-lg font-semibold mb-4">Membership Plans</p>
+        <div className="flex flex-wrap gap-x-2 gap-y-2 justify-center">
+          {gymMembership.map((membership) => (
+            <div
+              key={membership.name}
+              className="border rounded-lg px-4 py-3 text-center"
+            >
+              <div className="text-lg font-semibold mb-2">
+                {membership.name}
+              </div>
+              <div className="text-3xl font-bold mb-2">{membership.price}</div>
+              <div className="text-sm text-gray-500">
+                {membership.perks.map((perk) => (
+                  <div key={perk}>{perk}</div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
