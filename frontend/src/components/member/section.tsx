@@ -9,6 +9,7 @@ import { daysMap, getEndTime } from "../../../utils/helper";
 import { KeyedMutator } from "swr";
 import { useState } from "react";
 import Model from "../model/model";
+import Trainer from "../../pages/trainer";
 
 interface SectionProps {
   usedBy?: SignInRole;
@@ -81,35 +82,46 @@ const Section: React.FC<SectionProps> = ({
           </div>
         </Model>
       )}
-      {sections.map((section) => (
-        <div
-          key={section.sec}
-          onClick={async () => await addClass(section.name, section.sec)}
-          className={classNames(classes.container, "mx-10")}
-        >
-          <Disclosure.Panel>
-            <div>
-              <p className={classes.headerText}>Section {section.sec}</p>
-              <p className={classes.descriptionText}>
-                {daysMap[section.day]}, {section.time} to{" "}
-                {getEndTime(section.time, section.length)}
-              </p>
-              <div className="flex flex-row gap-x-1">
+      {sections.map((section) =>
+        section.sec ? (
+          <div
+            key={section.sec}
+            onClick={async () => await addClass(section.name, section.sec)}
+            className={classNames(classes.container, "mx-10")}
+          >
+            <Disclosure.Panel>
+              <div>
+                <p className={classes.headerText}>Section {section.sec}</p>
                 <p className={classes.descriptionText}>
-                  {section.trainer}, Room {section.room}
+                  {daysMap[section.day]}, {section.time} to{" "}
+                  {getEndTime(section.time, section.length)}
                 </p>
-                <AiOutlineEye
-                  onClick={async () =>
-                    await viewClassListClicked(section.sec, section.name)
-                  }
-                  className="my-auto hover:cursor-pointer"
-                />
+                <div className="flex flex-row gap-x-1">
+                  <p className={classes.descriptionText}>
+                    {section.trainer}, Room {section.room}
+                  </p>
+                  <AiOutlineEye
+                    onClick={async () =>
+                      await viewClassListClicked(section.sec, section.name)
+                    }
+                    className="my-auto hover:cursor-pointer"
+                  />
+                </div>
+                <p className={classes.descriptionText}>
+                  Max {section.capacity}
+                </p>
               </div>
-              <p className={classes.descriptionText}>Max {section.capacity}</p>
-            </div>
-          </Disclosure.Panel>
-        </div>
-      ))}
+            </Disclosure.Panel>
+          </div>
+        ) : (
+          <div
+            key={section.name}
+            className={classNames(classes.container, "mx-10")}
+          >
+            <p>No sections</p>
+          </div>
+        )
+      )}
     </>
   );
 };

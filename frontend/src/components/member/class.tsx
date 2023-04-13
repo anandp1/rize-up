@@ -43,7 +43,7 @@ const Class: React.FC<ClassProps> = ({ usedBy, memberEmail }: ClassProps) => {
     container: "bg-white rounded-lg flex flex-col p-5 mx-6",
     header: "flex justify-between items-center cursor-pointer",
     headerText: "text-lg font-bold text-left",
-    descriptionText: "text-sm text-gray-500 font-bold",
+    descriptionText: "text-sm text-gray-500 font-bold text-left",
   };
 
   const [allClassesByClassName, setAllClassesByClassName] =
