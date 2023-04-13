@@ -47,7 +47,7 @@ public class FrontDeskTable {
                 }
             }
         }
-        return null;
+        return new ArrayList<FrontDesk>(); // return null if no member found with the given email and password
     }
 
     // Remove FrontDesk from table

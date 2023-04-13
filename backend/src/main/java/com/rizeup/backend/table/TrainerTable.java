@@ -71,7 +71,7 @@ public class TrainerTable {
                 }
             }
         }
-        return null; // return null if no member found with the given email and password
+        return new ArrayList<Trainer>();
     }
 
     // find all classes and sections taught by a specific trainer

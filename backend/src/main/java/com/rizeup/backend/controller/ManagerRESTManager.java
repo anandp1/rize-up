@@ -188,10 +188,11 @@ public class ManagerRESTManager {
         }
     }
 
-    @PostMapping("employee/delete/{employeeEmail}/{employeeType}")
+    @PostMapping("/employee/delete/{employeeEmail}/{employeeType}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteEmployee(@PathVariable String employeeEmail, @PathVariable String employeeType) {
         try {
+
             if (employeeType.equals("trainer")) {
                 trainerTable.removeTrainer(employeeEmail);
             } else if (employeeType.equals("frontdesk")) {

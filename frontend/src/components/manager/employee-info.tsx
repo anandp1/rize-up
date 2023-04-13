@@ -15,7 +15,7 @@ const EmployeeInfo: React.FC<EmployeeInfoProps> = ({
   const [selectedMenu, setSelectedMenu] = useState(SignInRole.TRAINER);
   const deleteAccount = async (employeeEmail: string, employeeType: string) => {
     try {
-      await axios.delete(
+      await axios.post(
         `${process.env.NEXT_PUBLIC_RIZE_API_URL}/manager/employee/delete/${employeeEmail}/${employeeType}`
       );
 
